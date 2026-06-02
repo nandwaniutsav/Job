@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vanshika — Job Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0a0a0b;--bg2:#111113;--bg3:#18181b;--bg4:#1f1f24;
+--border:#2a2a30;--border2:#3a3a42;
+--text:#f0f0f0;--text2:#9090a0;--text3:#606070;
+--accent:#7c6af7;--accent2:#a594fa;--accent3:#c4b9fc;
+--green:#3dd68c;--amber:#f0a429;--red:#f06060;--blue:#4a9eff;
+--pink:#f06090;
+font-family:'DM Sans',sans-serif;
+}
+body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+.app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:auto 1fr;min-height:100vh}
+.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
+.topbar-logo{font-size:15px;font-weight:600;letter-spacing:-0.3px;color:var(--text)}
+.topbar-logo span{color:var(--accent2)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.badge-pill{background:var(--bg4);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--text2)}
+.badge-pill.active{border-color:var(--accent);color:var(--accent2);background:rgba(124,106,247,0.1)}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:16px 0;display:flex;flex-direction:column;gap:2px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;border-radius:0;color:var(--text2);font-size:13.5px;transition:all 0.15s;border-left:2px solid transparent}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(124,106,247,0.1);color:var(--accent2);border-left-color:var(--accent)}
+.nav-item i{font-size:16px}
+.nav-section{padding:16px 16px 4px;font-size:10px;letter-spacing:0.8px;color:var(--text3);text-transform:uppercase;font-weight:500}
+.nav-divider{height:1px;background:var(--border);margin:8px 0}
+.main{overflow-y:auto;padding:24px}
+.page{display:none}
+.page.active{display:block}
+.section-title{font-size:18px;font-weight:500;margin-bottom:4px}
+.section-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.stat-val{font-size:26px;font-weight:500;letter-spacing:-1px}
+.stat-val.green{color:var(--green)}
+.stat-val.amber{color:var(--amber)}
+.stat-val.accent{color:var(--accent2)}
+.stat-val.blue{color:var(--blue)}
+.job-grid{display:flex;flex-direction:column;gap:10px}
+.job-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;cursor:pointer;transition:border-color 0.15s}
+.job-card:hover{border-color:var(--border2)}
+.job-card.selected{border-color:var(--accent)}
+.job-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.job-title{font-size:14.5px;font-weight:500}
+.job-company{font-size:13px;color:var(--text2);margin-top:2px}
+.job-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11.5px;border:1px solid var(--border);color:var(--text2)}
+.tag.green{border-color:rgba(61,214,140,0.3);color:var(--green);background:rgba(61,214,140,0.07)}
+.tag.amber{border-color:rgba(240,164,41,0.3);color:var(--amber);background:rgba(240,164,41,0.07)}
+.tag.blue{border-color:rgba(74,158,255,0.3);color:var(--blue);background:rgba(74,158,255,0.07)}
+.tag.accent{border-color:rgba(124,106,247,0.3);color:var(--accent2);background:rgba(124,106,247,0.07)}
+.tag.red{border-color:rgba(240,96,96,0.3);color:var(--red);background:rgba(240,96,96,0.07)}
+.score-ring{display:flex;flex-direction:column;align-items:center;min-width:52px}
+.score-num{font-size:20px;font-weight:600;color:var(--green);letter-spacing:-1px;font-family:'DM Mono',monospace}
+.score-label{font-size:10px;color:var(--text3);margin-top:1px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text);transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.btn:hover{background:var(--bg4);border-color:var(--border2)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent2)}
+.btn.danger{border-color:rgba(240,96,96,0.4);color:var(--red)}
+.btn.success{border-color:rgba(61,214,140,0.4);color:var(--green)}
+.btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.search-bar{display:flex;gap:10px;margin-bottom:20px}
+.search-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:13.5px;font-family:'DM Sans',sans-serif;outline:none}
+.search-input:focus{border-color:var(--accent)}
+.search-input::placeholder{color:var(--text3)}
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px}
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px}
+.panel-title{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px}
+.cv-preview{background:var(--bg3);border-radius:8px;padding:14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);white-space:pre-wrap;max-height:300px;overflow-y:auto;line-height:1.6}
+.loading-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin:8px 0}
+.loading-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s}
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 140px)}
+.chat-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:12px}
+.msg{display:flex;gap:10px;max-width:90%}
+.msg.user{flex-direction:row-reverse;align-self:flex-end}
+.msg-bubble{padding:10px 14px;border-radius:10px;font-size:13.5px;line-height:1.6;background:var(--bg3);border:1px solid var(--border)}
+.msg.user .msg-bubble{background:rgba(124,106,247,0.15);border-color:rgba(124,106,247,0.3);color:var(--text)}
+.msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:2px}
+.avatar-ai{background:rgba(124,106,247,0.2);color:var(--accent2);border:1px solid rgba(124,106,247,0.3)}
+.avatar-user{background:rgba(61,214,140,0.15);color:var(--green);border:1px solid rgba(61,214,140,0.25)}
+.chat-input-row{display:flex;gap:10px;padding-top:12px;border-top:1px solid var(--border)}
+.chat-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13.5px;font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:42px;max-height:120px}
+.chat-input:focus{border-color:var(--accent)}
+.query-list{display:flex;flex-direction:column;gap:10px}
+.query-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.query-q{font-size:13.5px;font-weight:500;margin-bottom:10px;color:var(--text)}
+.query-answer{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:60px}
+.query-answer:focus{border-color:var(--accent)}
+.query-status{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--text3)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--border2)}
+.dot.answered{background:var(--green)}
+.dot.pending{background:var(--amber)}
+.pipeline-stages{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}
+.stage-col{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px}
+.stage-header{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);font-weight:500;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.stage-count{background:var(--bg4);border-radius:10px;padding:1px 7px;color:var(--text2)}
+.mini-card{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px;margin-bottom:8px;font-size:12px}
+.mini-card-title{font-weight:500;color:var(--text);margin-bottom:2px}
+.mini-card-co{color:var(--text3)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.tab{padding:8px 16px;font-size:13px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s}
+.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+.email-preview{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:13px;line-height:1.8;color:var(--text2)}
+.email-preview strong{color:var(--text)}
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
+.progress-label{width:140px;color:var(--text2);flex-shrink:0}
+.progress-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;background:var(--accent)}
+.progress-val{width:32px;text-align:right;color:var(--text2);font-family:'DM Mono',monospace;font-size:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="topbar">
+  <div class="topbar-logo">apply<span>.vg</span></div>
+  <div class="topbar-right">
+    <span class="badge-pill active"><i class="ti ti-circle-filled" style="font-size:8px;margin-right:4px"></i>Pipeline active</span>
+    <span class="badge-pill">vanshika.catprep@gmail.com</span>
+  </div>
+</div>
+
+<nav class="sidebar">
+  <div class="nav-section">Overview</div>
+  <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+  <div class="nav-item" onclick="showPage('find',this)"><i class="ti ti-search"></i> Find Jobs</div>
+  <div class="nav-item" onclick="showPage('pipeline',this)"><i class="ti ti-columns"></i> Pipeline</div>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Tools</div>
+  <div class="nav-item" onclick="showPage('tailor',this)"><i class="ti ti-file-text"></i> Tailor CV</div>
+  <div class="nav-item" onclick="showPage('outreach',this)"><i class="ti ti-mail"></i> Outreach</div>
+  <div class="nav-divider"></div>
+  <div class="nav-section">Support</div>
+  <div class="nav-item" onclick="showPage('queries',this)"><i class="ti ti-help-circle"></i> Queries</div>
+  <div class="nav-item" onclick="showPage('chat',this)"><i class="ti ti-message-circle"></i> Strategy Chat</div>
+</nav>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+  <div class="section-title">Good morning, Vanshika</div>
+  <div class="section-sub">Here's your job search at a glance.</div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-label">Jobs found</div><div class="stat-val accent" id="stat-found">0</div></div>
+    <div class="stat-card"><div class="stat-label">Applied</div><div class="stat-val green" id="stat-applied">0</div></div>
+    <div class="stat-card"><div class="stat-label">In review</div><div class="stat-val amber" id="stat-review">0</div></div>
+    <div class="stat-card"><div class="stat-label">Avg fit score</div><div class="stat-val blue" id="stat-avg">—</div></div>
+  </div>
+  <div class="two-col">
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div style="font-size:13px;font-weight:500;color:var(--text2)">RECENT JOBS</div>
+        <button class="btn primary" onclick="showPage('find',document.querySelector('[onclick*=find]'))"><i class="ti ti-search"></i> Find new jobs</button>
+      </div>
+      <div class="job-grid" id="recent-jobs">
+        <div style="color:var(--text3);font-size:13px;padding:20px 0">No jobs yet. Click "Find new jobs" to start.</div>
+      </div>
+    </div>
+    <div>
+      <div class="panel" style="margin-bottom:12px">
+        <div class="panel-title">Profile strength</div>
+        <div class="progress-row"><div class="progress-label">CV completeness</div><div class="progress-bar"><div class="progress-fill" style="width:92%"></div></div><div class="progress-val">92%</div></div>
+        <div class="progress-row"><div class="progress-label">Target clarity</div><div class="progress-bar"><div class="progress-fill" style="width:88%"></div></div><div class="progress-val">88%</div></div>
+        <div class="progress-row"><div class="progress-label">Queries answered</div><div class="progress-bar"><div class="progress-fill" style="width:20%" id="query-progress"></div></div><div class="progress-val" id="query-pct">20%</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Target roles</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <span class="tag accent">Brand Marketing</span>
+          <span class="tag accent">Growth Marketing</span>
+          <span class="tag blue">Consumer Insights</span>
+          <span class="tag blue">Brand Strategy</span>
+          <span class="tag green">Influencer Marketing</span>
+          <span class="tag green">Brand Partnerships</span>
+        </div>
+        <div style="margin-top:12px;font-size:11px;color:var(--text3)">Locations: Delhi NCR · Gurgaon · Bangalore · Mumbai</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FIND JOBS -->
+<div class="page" id="page-find">
+  <div class="section-title">Find Jobs</div>
+  <div class="section-sub">Paste a job URL or let the AI search. Results are scored against your profile.</div>
+  <div class="tab-bar">
+    <div class="tab active" onclick="switchTab(this,'tab-search')">AI Search</div>
+    <div class="tab" onclick="switchTab(this,'tab-url')">Paste URL</div>
+  </div>
+  <div id="tab-search">
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <input class="search-input" id="search-query" placeholder="e.g. brand marketing fresher Gurgaon D2C" value="brand marketing fresher Delhi NCR consumer brand">
+      <button class="btn primary" onclick="searchJobs()"><i class="ti ti-search"></i> Search</button>
+    </div>
+    <div id="search-status" style="font-size:13px;color:var(--text3);margin-bottom:16px"></div>
+    <div class="job-grid" id="search-results"></div>
+  </div>
+  <div id="tab-url" style="display:none">
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <input class="search-input" id="url-input" placeholder="https://www.linkedin.com/jobs/view/...">
+      <button class="btn primary" onclick="analyzeUrl()"><i class="ti ti-link"></i> Analyze</button>
+    </div>
+    <div id="url-result"></div>
+  </div>
+</div>
+
+<!-- PIPELINE -->
+<div class="page" id="page-pipeline">
+  <div class="section-title">Pipeline</div>
+  <div class="section-sub">Track every application from discovery to offer.</div>
+  <div class="pipeline-stages">
+    <div class="stage-col">
+      <div class="stage-header">Discovered <span class="stage-count" id="cnt-disc">0</span></div>
+      <div id="col-discovered"></div>
+    </div>
+    <div class="stage-col">
+      <div class="stage-header">Tailoring <span class="stage-count" id="cnt-tail">0</span></div>
+      <div id="col-tailoring"></div>
+    </div>
+    <div class="stage-col">
+      <div class="stage-header">Applied <span class="stage-count" id="cnt-appl">0</span></div>
+      <div id="col-applied"></div>
+    </div>
+    <div class="stage-col">
+      <div class="stage-header">Outreach <span class="stage-count" id="cnt-out">0</span></div>
+      <div id="col-outreach"></div>
+    </div>
+    <div class="stage-col">
+      <div class="stage-header">Interview <span class="stage-count" id="cnt-int">0</span></div>
+      <div id="col-interview"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TAILOR CV -->
+<div class="page" id="page-tailor">
+  <div class="section-title">Tailor CV</div>
+  <div class="section-sub">Paste a job description. The AI rewrites your CV bullets to match — no facts changed.</div>
+  <div class="two-col">
+    <div>
+      <div style="margin-bottom:10px;font-size:13px;color:var(--text2)">JOB DESCRIPTION</div>
+      <textarea class="search-input" id="jd-input" style="width:100%;height:180px;resize:vertical;font-family:'DM Sans',sans-serif" placeholder="Paste the full job description here..."></textarea>
+      <div class="btn-row">
+        <button class="btn primary" onclick="tailorCV()"><i class="ti ti-wand"></i> Tailor CV</button>
+        <button class="btn" onclick="clearTailor()"><i class="ti ti-refresh"></i> Clear</button>
+      </div>
+      <div id="tailor-status" style="margin-top:12px;font-size:13px;color:var(--text3)"></div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="panel-title">Tailored output</div>
+        <div class="cv-preview" id="cv-output">Tailored CV will appear here...</div>
+        <div class="btn-row" id="cv-actions" style="display:none">
+          <button class="btn success"><i class="ti ti-download"></i> Download PDF</button>
+          <button class="btn"><i class="ti ti-copy"></i> Copy text</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- OUTREACH -->
+<div class="page" id="page-outreach">
+  <div class="section-title">Outreach</div>
+  <div class="section-sub">Draft and send personalized cold emails to HRs and hiring managers.</div>
+  <div class="two-col">
+    <div>
+      <div style="margin-bottom:10px;font-size:13px;color:var(--text2)">JOB / COMPANY DETAILS</div>
+      <input class="search-input" id="outreach-company" placeholder="Company name" style="margin-bottom:8px;width:100%">
+      <input class="search-input" id="outreach-role" placeholder="Role title" style="margin-bottom:8px;width:100%">
+      <input class="search-input" id="outreach-hr" placeholder="HR name (optional — will search if empty)" style="margin-bottom:8px;width:100%">
+      <input class="search-input" id="outreach-email" placeholder="HR email (optional)" style="margin-bottom:8px;width:100%">
+      <textarea class="search-input" id="outreach-jd" style="width:100%;height:100px;resize:vertical" placeholder="Paste JD or key details..."></textarea>
+      <div class="btn-row">
+        <button class="btn primary" onclick="draftOutreach()"><i class="ti ti-mail"></i> Draft email</button>
+      </div>
+    </div>
+    <div>
+      <div class="panel">
+        <div class="panel-title">Email draft</div>
+        <div class="email-preview" id="email-draft">Email will appear here after drafting...</div>
+        <div class="btn-row" id="email-actions" style="display:none">
+          <button class="btn success" onclick="sendEmail()"><i class="ti ti-send"></i> Send via Gmail</button>
+          <button class="btn"><i class="ti ti-edit"></i> Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUERIES -->
+<div class="page" id="page-queries">
+  <div class="section-title">Queries</div>
+  <div class="section-sub">Answer these to improve your CV tailoring, fit scoring, and outreach quality.</div>
+  <div class="query-list" id="query-list"></div>
+  <div class="btn-row" style="margin-top:16px">
+    <button class="btn primary" onclick="saveQueries()"><i class="ti ti-check"></i> Save answers</button>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div class="page" id="page-chat">
+  <div class="section-title">Strategy Chat</div>
+  <div class="section-sub">Talk through your job search strategy, prep for interviews, or ask anything.</div>
+  <div class="chat-wrap">
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg">
+        <div class="msg-avatar avatar-ai">AI</div>
+        <div class="msg-bubble">Hey Vanshika — I've read your CV and profile. I know you're a fresher from IIM Bodh Gaya targeting brand/growth marketing roles in Delhi NCR, Gurgaon, Bangalore, or Mumbai. What do you want to think through?</div>
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <textarea class="chat-input" id="chat-input" placeholder="Ask about strategy, interview prep, companies to target..." rows="1" onkeydown="chatKeydown(event)"></textarea>
+      <button class="btn primary" onclick="sendChat()"><i class="ti ti-send"></i></button>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const API_KEY_PLACEHOLDER = 'YOUR_ANTHROPIC_API_KEY';
+
+const VANSHIKA_CV = `VANSHIKA GANDHI
+Gurgaon, Haryana | +91 8766938952 | vanshikagandhi.marketing@gmail.com | linkedin.com/in/vanshikagandhi11
+
+PROFILE
+Final-year IPM student at IIM Bodh Gaya (BBA 2026 completion). Experience across consumer research, digital marketing, and growth strategy. Skilled at translating behavioural insights into marketing initiatives. Interested in consumer-facing brand building through storytelling and scalable growth execution.
+
+EDUCATION
+IIM Bodh Gaya — Integrated Programme in Management (BBA+MBA) | 2023–2028 | CGPA: 8.35 (Top 5 Percentile)
+Modern Delhi Public School — Class XII: 90% | Class X: 97.8%
+
+CERTIFICATION
+Lean Six Sigma Green Belt — KPMG India (2025)
+
+EXPERIENCE
+Goa Institute of Management | Research Intern | May 2026–Present
+- 25+ qualitative interviews on consumer behaviour in quick commerce
+- Identified "post-purchase pause" phenomenon; thematic analysis + interview coding
+
+Jeevika – J-WiRES | Strategy Intern | Mar–May 2025
+- Surveyed 170+ households across 5 rural blocks
+- Developed Phase III scaling strategy for 18,000+ households
+- Designed SHG-led district prioritisation model across 8 districts
+
+Reliance Brands Ltd. | Digital Marketing Intern | Jun–Jul 2024
+- Optimised 7,000+ Mothercare product listings; improved digital discoverability
+- Analysed consumer behaviour through 50+ customer interactions
+- Aligned e-commerce communication with in-store positioning (omni-channel)
+
+LEADERSHIP
+Centre for Digital Innovation & Marketing, IIM BG | Student Lead | 2024–2026
+Envision Cell | Senior Representative | 2023–2026 (YES 2024 summit, 500+ attendees)
+ICSSR | Research Contributor | May–Jun 2025 (1,300+ SHG women, 3 Bihar districts)
+TEDxIIM Bodh Gaya | Creative & Marketing Team | 2023, 2025
+StraCon | Core Member — co-authored 30+ case casebook | 2024–2026
+
+ACHIEVEMENTS
+- Ranked 4/137 nationally — Brand Ascend 2.0 (2026)
+- Top 10/1,319 — SRCC Business Conclave (2024)
+- AIR 146 — IPMAT Indore (2023)
+- 99.699 percentile — JEE Paper 2 B.Arch (2023)
+
+SKILLS
+Consumer Research · Qualitative Research · Brand Strategy · Market Analysis · Omni-channel · MS Excel · PowerPoint · Canva · Figma · SPSS · Thematic Coding · Presentation Design · Public Speaking · Field Research`;
+
+const PREFERENCES = {
+  roles: ['Brand Marketing','Growth Marketing','Consumer Insights','Brand Strategy','Influencer Marketing','Brand Partnerships'],
+  locations: ['Gurgaon','Delhi NCR','Bangalore','Mumbai'],
+  types: ['Consumer brands','D2C','Agencies','Consumer tech','Media & content'],
+  fresher: true,
+  noticePeriod: 'Immediate',
+  salaryExpectation: '6-10 LPA'
+};
+
+const SYSTEM_PROMPT = `You are a job search AI assistant for Vanshika Gandhi, a fresher marketing professional.
+
+CV:
+${VANSHIKA_CV}
+
+Preferences:
+- Target roles: ${PREFERENCES.roles.join(', ')}
+- Locations: ${PREFERENCES.locations.join(', ')}
+- Company types: ${PREFERENCES.types.join(', ')}
+- Fresher (BBA completing 2026 from IIM Bodh Gaya)
+- Notice period: Immediate
+- Salary expectation: 6-10 LPA
+
+Dedicated application email: vanshika.catprep@gmail.com
+Personal notification email: vanshika.gandhi06@gmail.com
+
+Rules:
+- Never fabricate experience, numbers, or facts
+- Only rephrase or reframe real facts from the CV
+- Be specific and concise
+- When scoring jobs, use 0-100 scale based on role match, location, company type, and growth potential for a fresher`;
+
+let jobs = [];
+let queryAnswers = {};
+let chatHistory = [];
+
+const QUERIES = [
+  {id:'q1', q:'Do you have a preferred company size — startup (50 people), mid-size (50–500), or large corporate?', category:'Preference'},
+  {id:'q2', q:'Are you open to contract/internship-to-PPO roles, or only full-time from day one?', category:'Role type'},
+  {id:'q3', q:'Any specific brands you\'d love to work at — dream companies?', category:'Targeting'},
+  {id:'q4', q:'Are you comfortable with field/on-ground marketing roles, or strictly digital/strategic?', category:'Role type'},
+  {id:'q5', q:'What\'s your LinkedIn headline right now? (Used for outreach emails)', category:'Outreach'},
+  {id:'q6', q:'Do you have a portfolio, case study deck, or any work samples you can link?', category:'Materials'},
+  {id:'q7', q:'Any sectors you want to avoid entirely — e.g. pharma, BFSI, B2B?', category:'Blacklist'},
+  {id:'q8', q:'Relocation: are you currently in Gurgaon/Delhi? Can you move to Bangalore/Mumbai immediately?', category:'Logistics'},
+];
+
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+}
+
+function switchTab(el, tabId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-search').style.display = tabId==='tab-search' ? 'block' : 'none';
+  document.getElementById('tab-url').style.display = tabId==='tab-url' ? 'block' : 'none';
+}
+
+async function callClaude(messages, systemOverride) {
+  const apiKey = document.getElementById('api-key-val') ? document.getElementById('api-key-val').value : '';
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemOverride || SYSTEM_PROMPT,
+      messages
+    })
+  });
+  const data = await response.json();
+  return data.content?.[0]?.text || '';
+}
+
+async function searchJobs() {
+  const query = document.getElementById('search-query').value.trim();
+  if(!query) return;
+  const status = document.getElementById('search-status');
+  const results = document.getElementById('search-results');
+  status.innerHTML = '<span class="spinner"></span> Searching and scoring jobs...';
+  results.innerHTML = '';
+  try {
+    const text = await callClaude([{role:'user', content:`Search for real job opportunities matching this query: "${query}". Generate 6 realistic job listings that would genuinely exist for Vanshika's profile. For each, provide: title, company, location, type (Full-time/Contract), fit score (0-100), 2-line reason why it fits, and key tags. Format as JSON array with fields: title, company, location, type, score, reason, tags(array). Only return valid JSON.`}]);
+    let parsed;
+    try { parsed = JSON.parse(text.replace(/```json|```/g,'')); } catch(e) { parsed = []; }
+    if(!Array.isArray(parsed)) parsed = [];
+    parsed.forEach(job => {
+      job.id = Date.now() + Math.random();
+      job.stage = 'discovered';
+      jobs.push(job);
+    });
+    renderJobResults(parsed, results);
+    updateStats();
+    updatePipeline();
+    status.textContent = `Found ${parsed.length} relevant roles.`;
+  } catch(e) {
+    status.textContent = 'Error searching. Check your API key in Settings.';
+  }
+}
+
+function renderJobResults(list, container) {
+  container.innerHTML = '';
+  list.forEach(job => {
+    const scoreColor = job.score >= 75 ? 'green' : job.score >= 55 ? 'amber' : 'red';
+    const div = document.createElement('div');
+    div.className = 'job-card';
+    div.innerHTML = `
+      <div class="job-header">
+        <div>
+          <div class="job-title">${job.title}</div>
+          <div class="job-company">${job.company} · ${job.location}</div>
+        </div>
+        <div class="score-ring">
+          <div class="score-num" style="color:var(--${scoreColor})">${job.score}</div>
+          <div class="score-label">fit</div>
+        </div>
+      </div>
+      <div style="font-size:12.5px;color:var(--text2);margin-top:6px">${job.reason}</div>
+      <div class="job-meta">
+        <span class="tag blue">${job.type}</span>
+        ${(job.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}
+      </div>
+      <div class="btn-row">
+        <button class="btn success" onclick="moveToTailoring('${job.id}')"><i class="ti ti-wand"></i> Tailor & Apply</button>
+        <button class="btn" onclick="quickOutreach('${job.id}')"><i class="ti ti-mail"></i> Draft outreach</button>
+        <button class="btn danger" onclick="dismissJob('${job.id}',this.closest('.job-card'))"><i class="ti ti-x"></i> Skip</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+async function tailorCV() {
+  const jd = document.getElementById('jd-input').value.trim();
+  if(!jd) return;
+  const status = document.getElementById('tailor-status');
+  const output = document.getElementById('cv-output');
+  status.innerHTML = '<span class="spinner"></span> Tailoring CV...';
+  output.textContent = 'Working...';
+  try {
+    const text = await callClaude([{role:'user', content:`Tailor Vanshika's CV for this job description. Rewrite bullet points to mirror JD language and emphasise the most relevant experience. DO NOT add fake experience or change any numbers/facts. Return the full tailored CV text ready to copy.\n\nJOB DESCRIPTION:\n${jd}`}]);
+    output.textContent = text;
+    document.getElementById('cv-actions').style.display = 'flex';
+    status.textContent = 'Done. Review and download.';
+  } catch(e) {
+    status.textContent = 'Error. Check API key.';
+    output.textContent = 'Failed to tailor.';
+  }
+}
+
+function clearTailor() {
+  document.getElementById('jd-input').value = '';
+  document.getElementById('cv-output').textContent = 'Tailored CV will appear here...';
+  document.getElementById('cv-actions').style.display = 'none';
+  document.getElementById('tailor-status').textContent = '';
+}
+
+async function draftOutreach() {
+  const company = document.getElementById('outreach-company').value.trim();
+  const role = document.getElementById('outreach-role').value.trim();
+  const hr = document.getElementById('outreach-hr').value.trim();
+  const jd = document.getElementById('outreach-jd').value.trim();
+  if(!company || !role) return;
+  const draft = document.getElementById('email-draft');
+  draft.innerHTML = '<span class="spinner"></span> Drafting...';
+  try {
+    const text = await callClaude([{role:'user', content:`Write a cold outreach email from Vanshika Gandhi to the hiring manager/HR at ${company} for the role of ${role}. ${hr ? `HR name: ${hr}.` : ''} ${jd ? `JD context: ${jd}` : ''} The email should be concise (150-180 words), genuine, not templated. Reference specific things from her CV that are relevant. Subject line first, then email body. Signing off from vanshika.catprep@gmail.com.`}]);
+    draft.innerHTML = text.replace(/\n/g,'<br>');
+    document.getElementById('email-actions').style.display = 'flex';
+  } catch(e) {
+    draft.textContent = 'Failed to draft. Check API key.';
+  }
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  const container = document.getElementById('chat-messages');
+  appendMsg(container, msg, 'user');
+  chatHistory.push({role:'user', content:msg});
+  const typing = document.createElement('div');
+  typing.className = 'msg';
+  typing.innerHTML = '<div class="msg-avatar avatar-ai">AI</div><div class="msg-bubble" style="color:var(--text3)">Thinking...</div>';
+  container.appendChild(typing);
+  container.scrollTop = container.scrollHeight;
+  try {
+    const text = await callClaude(chatHistory, SYSTEM_PROMPT + '\n\nYou are also a strategic career advisor. Be direct, insightful, and honest. No generic advice.');
+    container.removeChild(typing);
+    chatHistory.push({role:'assistant', content:text});
+    appendMsg(container, text, 'ai');
+  } catch(e) {
+    typing.querySelector('.msg-bubble').textContent = 'Error. Check API key.';
+  }
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendMsg(container, text, type) {
+  const div = document.createElement('div');
+  div.className = 'msg' + (type==='user' ? ' user' : '');
+  div.innerHTML = `<div class="msg-avatar ${type==='user'?'avatar-user':'avatar-ai'}">${type==='user'?'VG':'AI'}</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function chatKeydown(e) {
+  if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+
+function renderQueries() {
+  const list = document.getElementById('query-list');
+  list.innerHTML = '';
+  QUERIES.forEach(q => {
+    const div = document.createElement('div');
+    div.className = 'query-card';
+    const saved = queryAnswers[q.id] || '';
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span class="tag blue">${q.category}</span>
+        <div class="query-status"><div class="dot ${saved?'answered':'pending'}"></div><span>${saved?'Answered':'Pending'}</span></div>
+      </div>
+      <div class="query-q">${q.q}</div>
+      <textarea class="query-answer" id="ans-${q.id}" placeholder="Your answer...">${saved}</textarea>`;
+    list.appendChild(div);
+  });
+}
+
+function saveQueries() {
+  QUERIES.forEach(q => {
+    const el = document.getElementById('ans-'+q.id);
+    if(el) queryAnswers[q.id] = el.value.trim();
+  });
+  const answered = Object.values(queryAnswers).filter(v=>v).length;
+  const pct = Math.round((answered/QUERIES.length)*100);
+  document.getElementById('query-progress').style.width = pct+'%';
+  document.getElementById('query-pct').textContent = pct+'%';
+  renderQueries();
+  alert('Answers saved. Your tailoring and scoring will improve.');
+}
+
+function updateStats() {
+  document.getElementById('stat-found').textContent = jobs.length;
+  document.getElementById('stat-applied').textContent = jobs.filter(j=>j.stage==='applied').length;
+  document.getElementById('stat-review').textContent = jobs.filter(j=>j.stage==='tailoring'||j.stage==='outreach').length;
+  const scores = jobs.map(j=>j.score).filter(Boolean);
+  document.getElementById('stat-avg').textContent = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : '—';
+}
+
+function updatePipeline() {
+  ['discovered','tailoring','applied','outreach','interview'].forEach((stage,i) => {
+    const ids = ['disc','tail','appl','out','int'];
+    const col = document.getElementById('col-'+stage);
+    const cnt = document.getElementById('cnt-'+ids[i]);
+    const stageJobs = jobs.filter(j=>j.stage===stage);
+    cnt.textContent = stageJobs.length;
+    col.innerHTML = stageJobs.map(j=>`<div class="mini-card"><div class="mini-card-title">${j.title}</div><div class="mini-card-co">${j.company}</div></div>`).join('');
+  });
+}
+
+function moveToTailoring(id) {
+  const job = jobs.find(j=>j.id==id);
+  if(job) { job.stage='tailoring'; updateStats(); updatePipeline(); showPage('tailor',document.querySelector('[onclick*=tailor]')); }
+}
+
+function quickOutreach(id) {
+  const job = jobs.find(j=>j.id==id);
+  if(job) {
+    document.getElementById('outreach-company').value = job.company;
+    document.getElementById('outreach-role').value = job.title;
+    showPage('outreach',document.querySelector('[onclick*=outreach]'));
+  }
+}
+
+function dismissJob(id, card) {
+  jobs = jobs.filter(j=>j.id!=id);
+  card.style.opacity='0'; card.style.transition='opacity 0.2s';
+  setTimeout(()=>card.remove(),200);
+  updateStats(); updatePipeline();
+}
+
+function sendEmail() { alert('Gmail MCP integration — wire up with your Gmail OAuth token in the backend deployment.'); }
+function analyzeUrl() { alert('URL analysis — paste the job URL and the AI will fetch and score it. Wire up web_fetch in backend deployment.'); }
+
+renderQueries();
+
+const recentJobsEl = document.getElementById('recent-jobs');
+recentJobsEl.innerHTML = `<div style="color:var(--text3);font-size:13px;padding:20px 0;text-align:center">
+  <i class="ti ti-search" style="font-size:24px;display:block;margin-bottom:8px;opacity:0.4"></i>
+  No jobs yet. Click "Find new jobs" to start.
+</div>`;
+</script>
+</body>
+</html>

@@ -9,7 +9,7 @@ app = Flask(__name__)
 CORS(app)
 
 ANTHROPIC_KEY = os.environ.get('ANTHROPIC_KEY')
-GMAIL_USER = "vanshika.catprep@gmail.com"
+GMAIL_USER = "vanshikagandhi.marketing@gmail.com"
 GMAIL_PASS = os.environ.get('GMAIL_PASS')
 
 @app.route('/health')

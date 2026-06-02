@@ -262,11 +262,15 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line
 <!-- TAILOR CV -->
 <div class="page" id="page-tailor">
   <div class="section-title">Tailor CV</div>
-  <div class="section-sub">Paste a JD. AI rewrites your bullets to match — no facts changed, only framing.</div>
+  <div class="section-sub" id="tailor-sub">Tailoring for your profile. Optionally paste a JD for a tighter match.</div>
   <div class="two-col">
     <div>
-      <div style="margin-bottom:8px;font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Job description</div>
-      <textarea class="input" id="jd-input" style="width:100%;height:200px;resize:vertical" placeholder="Paste the full job description here..."></textarea>
+      <div id="tailor-job-context" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px">
+        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Tailoring for</div>
+        <div id="tailor-job-label" style="font-weight:500"></div>
+      </div>
+      <div style="margin-bottom:8px;font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">JD (optional — paste for tighter match)</div>
+      <textarea class="input" id="jd-input" style="width:100%;height:160px;resize:vertical" placeholder="Optional: paste job description for a tighter match..."></textarea>
       <div class="btn-row">
         <button class="btn primary" onclick="tailorCV()"><i class="ti ti-wand"></i> Tailor CV</button>
         <button class="btn" onclick="clearTailor()"><i class="ti ti-refresh"></i> Clear</button>
@@ -276,9 +280,10 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line
     <div>
       <div class="panel">
         <div class="panel-title">Tailored output</div>
-        <div class="cv-preview" id="cv-output">Paste a JD and click Tailor CV...</div>
+        <div class="cv-preview" id="cv-output">Click Tailor CV to generate...</div>
         <div class="btn-row" id="cv-actions" style="display:none">
-          <button class="btn success" onclick="copyCV()"><i class="ti ti-copy"></i> Copy text</button>
+          <button class="btn" onclick="copyCV()"><i class="ti ti-copy"></i> Copy</button>
+          <button class="btn success" onclick="downloadCV()"><i class="ti ti-download"></i> Download</button>
         </div>
       </div>
     </div>
@@ -288,15 +293,14 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line
 <!-- OUTREACH -->
 <div class="page" id="page-outreach">
   <div class="section-title">Outreach</div>
-  <div class="section-sub">Draft personalized cold emails to HRs and hiring managers.</div>
+  <div class="section-sub">Draft personalized cold emails. AI finds HR contact automatically.</div>
   <div class="two-col">
     <div style="display:flex;flex-direction:column;gap:8px">
       <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Details</div>
       <input class="input" id="outreach-company" placeholder="Company name" style="width:100%">
       <input class="input" id="outreach-role" placeholder="Role title" style="width:100%">
-      <input class="input" id="outreach-hr" placeholder="HR name (optional)" style="width:100%">
-      <input class="input" id="outreach-email-to" placeholder="HR email (optional)" style="width:100%">
-      <textarea class="input" id="outreach-jd" style="width:100%;height:100px;resize:vertical" placeholder="Paste JD or key details..."></textarea>
+      <input class="input" id="outreach-hr" placeholder="HR name (leave blank — AI will find it)" style="width:100%">
+      <input class="input" id="outreach-email-to" placeholder="HR email (leave blank — AI will find it)" style="width:100%">
       <div class="btn-row" style="margin-top:4px">
         <button class="btn primary" onclick="draftOutreach()"><i class="ti ti-mail"></i> Draft email</button>
       </div>
@@ -305,10 +309,11 @@ body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line
     <div>
       <div class="panel">
         <div class="panel-title">Email draft</div>
-        <div class="email-preview" id="email-draft">Fill in company and role, then click Draft email...</div>
+        <div class="email-preview" id="email-draft" contenteditable="false">Fill in company and role, then click Draft email...</div>
         <div class="btn-row" id="email-actions" style="display:none">
           <button class="btn" onclick="copyEmail()"><i class="ti ti-copy"></i> Copy</button>
-          <button class="btn success" id="send-btn" onclick="sendEmail()"><i class="ti ti-send"></i> Send via Gmail</button>
+          <button class="btn" onclick="editEmail()" id="edit-btn"><i class="ti ti-edit"></i> Edit</button>
+          <button class="btn success" id="send-btn" onclick="sendEmail()"><i class="ti ti-send"></i> Send</button>
         </div>
         <div class="status-line" id="send-status"></div>
       </div>
@@ -531,59 +536,104 @@ async function analyzeUrl() {
   } catch(e) { status.textContent = 'Error: ' + e.message; }
 }
 
+let currentTailorJob = null;
+
 async function tailorCV() {
   const jd = document.getElementById('jd-input').value.trim();
-  if(!jd) return;
   const status = document.getElementById('tailor-status');
   const output = document.getElementById('cv-output');
   status.innerHTML = '<span class="spinner"></span>Tailoring...';
   output.textContent = 'Working...';
+  let prompt = '';
+  if(currentTailorJob) {
+    prompt = `Tailor Vanshika's CV for this role: ${currentTailorJob.title} at ${currentTailorJob.company}. ${currentTailorJob.reason ? 'Context: ' + currentTailorJob.reason : ''}. ${jd ? 'Full JD:\n' + jd : ''} Rewrite bullet points to mirror this role. No invented facts. Return full tailored CV text.`;
+  } else if(jd) {
+    prompt = `Tailor Vanshika's CV for this job description. Rewrite bullet points to mirror JD language. No invented facts. Return full tailored CV text.\n\nJOB DESCRIPTION:\n${jd}`;
+  } else {
+    prompt = `Produce a strong general version of Vanshika's CV optimised for brand/growth marketing roles at consumer brands and D2C companies. Reorder and reframe for maximum impact. No invented facts. Return full CV text.`;
+  }
   try {
-    const text = await callBackend([{role:'user', content:`Tailor Vanshika's CV for this job description. Rewrite bullet points to mirror JD language. Emphasise most relevant experience. DO NOT invent facts or change numbers. Return full tailored CV text ready to copy-paste.\n\nJOB DESCRIPTION:\n${jd}`}]);
+    const text = await callBackend([{role:'user', content: prompt}]);
     output.textContent = text;
     document.getElementById('cv-actions').style.display = 'flex';
-    status.textContent = 'Done. Review and copy.';
+    status.textContent = 'Done.';
+    if(currentTailorJob) { currentTailorJob.tailoredCV = text; saveJobs(); }
   } catch(e) { status.textContent = 'Error: ' + e.message; output.textContent = 'Failed.'; }
 }
 
 function clearTailor() {
+  currentTailorJob = null;
   document.getElementById('jd-input').value = '';
-  document.getElementById('cv-output').textContent = 'Paste a JD and click Tailor CV...';
+  document.getElementById('cv-output').textContent = 'Click Tailor CV to generate...';
   document.getElementById('cv-actions').style.display = 'none';
   document.getElementById('tailor-status').textContent = '';
+  document.getElementById('tailor-job-context').style.display = 'none';
+  document.getElementById('tailor-sub').textContent = 'Tailoring for your profile. Optionally paste a JD for a tighter match.';
 }
 
 function copyCV() {
   navigator.clipboard.writeText(document.getElementById('cv-output').textContent);
-  document.querySelector('#cv-actions .btn').textContent = 'Copied!';
-  setTimeout(()=>{ document.querySelector('#cv-actions .btn').innerHTML = '<i class="ti ti-copy"></i> Copy text'; }, 2000);
+  const btn = document.querySelector('#cv-actions .btn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = 'Copied!';
+  setTimeout(()=>{ btn.innerHTML = orig; }, 2000);
+}
+
+function downloadCV() {
+  const text = document.getElementById('cv-output').textContent;
+  const job = currentTailorJob ? `_${currentTailorJob.company.replace(/\s+/g,'_')}` : '';
+  const blob = new Blob([text], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `Vanshika_Gandhi_CV${job}.txt`;
+  a.click();
 }
 
 async function draftOutreach() {
   const company = document.getElementById('outreach-company').value.trim();
   const role = document.getElementById('outreach-role').value.trim();
   if(!company || !role) return;
-  const hr = document.getElementById('outreach-hr').value.trim();
-  const jd = document.getElementById('outreach-jd').value.trim();
+  let hr = document.getElementById('outreach-hr').value.trim();
+  let hrEmail = document.getElementById('outreach-email-to').value.trim();
   const status = document.getElementById('outreach-status');
   const draft = document.getElementById('email-draft');
-  status.innerHTML = '<span class="spinner"></span>Drafting...';
+  status.innerHTML = '<span class="spinner"></span>Finding HR contact...';
   draft.textContent = 'Working...';
+
   try {
-    const text = await callBackend([{role:'user', content:`Write a cold outreach email from Vanshika Gandhi to the hiring team at ${company} for the role of ${role}. ${hr?`Address it to ${hr}.`:''} ${jd?`JD context:\n${jd}`:''}
+    // Step 1: find HR if not provided
+    if(!hr || !hrEmail) {
+      const hrRes = await callBackend([{role:'user', content:`Find the HR manager or talent acquisition contact at ${company} in India who handles marketing/brand roles. Return JSON only: {name, email, title}. If you can't find a real email, make a best guess at the format (e.g. firstname@company.com) based on common patterns. No other text.`}]);
+      try {
+        const hrData = JSON.parse(hrRes.replace(/```json|```/g,'').trim());
+        if(!hr && hrData.name) { hr = hrData.name; document.getElementById('outreach-hr').value = hr; }
+        if(!hrEmail && hrData.email) { hrEmail = hrData.email; document.getElementById('outreach-email-to').value = hrEmail; }
+      } catch(e) {}
+    }
 
-Email must be:
-- 150-180 words max
-- Genuine, not templated
-- Reference specific relevant experience from her CV
-- Strong opening, clear ask, professional close
-- From: vanshika.catprep@gmail.com
+    status.innerHTML = '<span class="spinner"></span>Drafting email...';
 
-Format: first line is Subject:, then blank line, then email body.`}]);
+    const text = await callBackend([{role:'user', content:`Write a cold outreach email from Vanshika Gandhi to ${hr || 'the hiring team'} at ${company} for the role of ${role}. 150 words max. Genuine, specific, not templated. Reference her most relevant CV experience for this role type. Sign off from vanshikagandhi.marketing@gmail.com. Format: first line is Subject: then blank line then body only.`}]);
     draft.textContent = text;
     document.getElementById('email-actions').style.display = 'flex';
-    status.textContent = '';
+    status.textContent = hrEmail ? `HR: ${hrEmail}` : 'No email found — add manually before sending.';
   } catch(e) { status.textContent = 'Error: ' + e.message; draft.textContent = 'Failed.'; }
+}
+
+function editEmail() {
+  const draft = document.getElementById('email-draft');
+  const btn = document.getElementById('edit-btn');
+  if(draft.contentEditable === 'true') {
+    draft.contentEditable = 'false';
+    draft.style.outline = 'none';
+    btn.innerHTML = '<i class="ti ti-edit"></i> Edit';
+  } else {
+    draft.contentEditable = 'true';
+    draft.style.outline = '1px solid var(--accent)';
+    draft.style.borderRadius = '4px';
+    draft.focus();
+    btn.innerHTML = '<i class="ti ti-check"></i> Done';
+  }
 }
 
 function copyEmail() {
@@ -592,23 +642,26 @@ function copyEmail() {
 
 async function sendEmail() {
   const to = document.getElementById('outreach-email-to').value.trim();
-  if(!to) { document.getElementById('send-status').textContent = 'Enter HR email to send.'; return; }
+  if(!to) { document.getElementById('send-status').textContent = 'Add HR email first.'; return; }
   const body = document.getElementById('email-draft').textContent;
   const lines = body.split('\n');
   const subject = lines[0].replace(/^Subject:\s*/i,'').trim();
   const emailBody = lines.slice(2).join('\n').trim();
   const status = document.getElementById('send-status');
-  status.innerHTML = '<span class="spinner"></span>Sending...';
-  try {
-    const res = await fetch(`${BACKEND}/send-email`, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({to, subject, body: emailBody})
-    });
-    const data = await res.json();
-    if(data.ok) { status.textContent = 'Sent successfully.'; status.style.color = 'var(--green)'; }
-    else { status.textContent = 'Failed: ' + (data.error || 'unknown error'); }
-  } catch(e) { status.textContent = 'Error: ' + e.message; }
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+  // Fire and don't wait — async
+  fetch(`${BACKEND}/send-email`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({to, subject, body: emailBody})
+  }).then(r=>r.json()).then(data=>{
+    if(data.ok) { status.textContent = 'Sent.'; status.style.color='var(--green)'; }
+    else { status.textContent = 'Failed: ' + (data.error||'unknown'); }
+    btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i> Send';
+  }).catch(e=>{ status.textContent='Error: '+e.message; btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i> Send'; });
+  status.textContent = 'Sending...';
 }
 
 async function sendChat() {
@@ -702,7 +755,17 @@ function updatePipeline() {
 
 function moveToTailoring(id) {
   const job = jobs.find(j=>String(j.id)===String(id));
-  if(job) { job.stage='tailoring'; saveJobs(); updateStats(); updatePipeline(); showPage('tailor',document.querySelectorAll('.nav-item')[3]); }
+  if(job) {
+    job.stage='tailoring'; saveJobs(); updateStats(); updatePipeline();
+    currentTailorJob = job;
+    document.getElementById('tailor-job-context').style.display = 'block';
+    document.getElementById('tailor-job-label').textContent = `${job.title} @ ${job.company}`;
+    document.getElementById('tailor-sub').textContent = `Tailoring for ${job.title} at ${job.company}.`;
+    document.getElementById('jd-input').value = '';
+    document.getElementById('cv-output').textContent = 'Click Tailor CV to generate...';
+    document.getElementById('cv-actions').style.display = 'none';
+    showPage('tailor', document.querySelectorAll('.nav-item')[3]);
+  }
 }
 
 function quickOutreach(id) {

@@ -20,7 +20,7 @@ def claude():
     data = request.json
     client = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
     msg = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-5",
         max_tokens=1000,
         system=data.get('system',''),
         messages=data.get('messages',[])

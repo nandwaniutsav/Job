@@ -2,897 +2,1297 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>apply.vg — Vanshika Gandhi Job Pipeline</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pursuit — your job search, mostly automated</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Albert+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
---bg:#0a0a0b;--bg2:#111113;--bg3:#18181b;--bg4:#1f1f24;
---border:#2a2a30;--border2:#3a3a42;
---text:#f0f0f0;--text2:#9090a0;--text3:#606070;
---accent:#7c6af7;--accent2:#a594fa;--accent3:#c4b9fc;
---green:#3dd68c;--amber:#f0a429;--red:#f06060;--blue:#4a9eff;
-font-family:'DM Sans',sans-serif;
+  --bg:#F6F4EE; --surface:#FFFFFF; --surface2:#FBFAF5;
+  --ink:#222A21; --muted:#6E7468; --faint:#9AA093;
+  --border:#E5E2D6; --border2:#D5D2C4;
+  --pine:#205C45; --pine-deep:#17402F; --pine-soft:#E5EFE7;
+  --gold:#E8A33D; --gold-deep:#C9852A; --gold-soft:#FBF0DC;
+  --sky:#4D8FCC; --sky-soft:#E7F0F9;
+  --clay:#CE5F4B; --clay-soft:#F9EAE6;
+  --moss:#2E9E6B; --moss-soft:#E6F4EC;
+  --radius:12px; --shadow:0 1px 3px rgba(34,42,33,.06),0 4px 14px rgba(34,42,33,.05);
 }
-body{background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
-.app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:auto 1fr;min-height:100vh}
-.topbar{grid-column:1/-1;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
-.topbar-logo{font-size:15px;font-weight:600;letter-spacing:-0.3px;color:var(--text)}
-.topbar-logo span{color:var(--accent2)}
-.topbar-right{display:flex;align-items:center;gap:12px}
-.badge-pill{background:var(--bg4);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--text2)}
-.badge-pill.active{border-color:var(--accent);color:var(--accent2);background:rgba(124,106,247,0.1)}
-.sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:16px 0;display:flex;flex-direction:column;gap:2px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:8px 16px;cursor:pointer;color:var(--text2);font-size:13.5px;transition:all 0.15s;border-left:2px solid transparent}
-.nav-item:hover{background:var(--bg3);color:var(--text)}
-.nav-item.active{background:rgba(124,106,247,0.1);color:var(--accent2);border-left-color:var(--accent)}
-.nav-item i{font-size:16px}
-.nav-section{padding:16px 16px 4px;font-size:10px;letter-spacing:0.8px;color:var(--text3);text-transform:uppercase;font-weight:500}
-.nav-divider{height:1px;background:var(--border);margin:8px 0}
-.main{overflow-y:auto;padding:24px}
-.page{display:none}
-.page.active{display:block}
-.section-title{font-size:18px;font-weight:500;margin-bottom:4px}
-.section-sub{font-size:13px;color:var(--text2);margin-bottom:20px}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
-.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px}
-.stat-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
-.stat-val{font-size:26px;font-weight:500;letter-spacing:-1px}
-.stat-val.green{color:var(--green)}
-.stat-val.amber{color:var(--amber)}
-.stat-val.accent{color:var(--accent2)}
-.stat-val.blue{color:var(--blue)}
-.job-grid{display:flex;flex-direction:column;gap:10px}
-.job-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;cursor:pointer;transition:border-color 0.15s}
-.job-card:hover{border-color:var(--border2)}
-.job-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
-.job-title{font-size:14.5px;font-weight:500}
-.job-company{font-size:13px;color:var(--text2);margin-top:2px}
-.job-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11.5px;border:1px solid var(--border);color:var(--text2)}
-.tag.green{border-color:rgba(61,214,140,0.3);color:var(--green);background:rgba(61,214,140,0.07)}
-.tag.amber{border-color:rgba(240,164,41,0.3);color:var(--amber);background:rgba(240,164,41,0.07)}
-.tag.blue{border-color:rgba(74,158,255,0.3);color:var(--blue);background:rgba(74,158,255,0.07)}
-.tag.accent{border-color:rgba(124,106,247,0.3);color:var(--accent2);background:rgba(124,106,247,0.07)}
-.tag.red{border-color:rgba(240,96,96,0.3);color:var(--red);background:rgba(240,96,96,0.07)}
-.score-ring{display:flex;flex-direction:column;align-items:center;min-width:52px}
-.score-num{font-size:20px;font-weight:600;letter-spacing:-1px;font-family:'DM Mono',monospace}
-.score-label{font-size:10px;color:var(--text3);margin-top:1px}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text);transition:all 0.15s;font-family:'DM Sans',sans-serif}
-.btn:hover{background:var(--bg4);border-color:var(--border2)}
-.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.btn.primary:hover{opacity:0.9}
-.btn.danger{border-color:rgba(240,96,96,0.4);color:var(--red)}
-.btn.success{border-color:rgba(61,214,140,0.4);color:var(--green)}
-.btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:13.5px;font-family:'DM Sans',sans-serif;outline:none}
-.input:focus{border-color:var(--accent)}
-.input::placeholder{color:var(--text3)}
-.two-col{display:grid;grid-template-columns:1fr 340px;gap:16px}
-.panel{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px}
-.panel-title{font-size:11px;font-weight:500;color:var(--text3);margin-bottom:14px;text-transform:uppercase;letter-spacing:0.5px}
-.cv-preview{background:var(--bg3);border-radius:8px;padding:14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);white-space:pre-wrap;max-height:340px;overflow-y:auto;line-height:1.6}
-.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 160px)}
-.chat-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:12px}
-.msg{display:flex;gap:10px;max-width:88%}
-.msg.user{flex-direction:row-reverse;align-self:flex-end}
-.msg-bubble{padding:10px 14px;border-radius:10px;font-size:13.5px;line-height:1.6;background:var(--bg3);border:1px solid var(--border)}
-.msg.user .msg-bubble{background:rgba(124,106,247,0.15);border-color:rgba(124,106,247,0.3)}
-.msg-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:2px}
-.avatar-ai{background:rgba(124,106,247,0.2);color:var(--accent2);border:1px solid rgba(124,106,247,0.3)}
-.avatar-user{background:rgba(61,214,140,0.15);color:var(--green);border:1px solid rgba(61,214,140,0.25)}
-.chat-input-row{display:flex;gap:10px;padding-top:12px;border-top:1px solid var(--border)}
-.chat-input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13.5px;font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:42px;max-height:120px}
-.chat-input:focus{border-color:var(--accent)}
-.query-list{display:flex;flex-direction:column;gap:10px}
-.query-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px}
-.query-answer{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:60px}
-.query-answer:focus{border-color:var(--accent)}
-.pipeline-stages{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:20px}
-.stage-col{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px;min-height:200px}
-.stage-header{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);font-weight:500;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.stage-count{background:var(--bg4);border-radius:10px;padding:1px 7px;color:var(--text2)}
-.mini-card{background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:10px;margin-bottom:8px;font-size:12px}
-.mini-card-title{font-weight:500;color:var(--text);margin-bottom:2px}
-.mini-card-co{color:var(--text3)}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:'Albert Sans',sans-serif;font-size:14px;line-height:1.55;min-height:100vh}
+h1,h2,h3,.display{font-family:'Bricolage Grotesque',sans-serif}
+.mono{font-family:'Spline Sans Mono',monospace}
+a{color:var(--pine)}
+button{font-family:'Albert Sans',sans-serif}
+::placeholder{color:var(--faint)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ---------- shared atoms ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--ink);transition:all .15s}
+.btn:hover{border-color:var(--faint);background:var(--surface2)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.primary{background:var(--pine);border-color:var(--pine);color:#fff}
+.btn.primary:hover{background:var(--pine-deep)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#3A2A0E}
+.btn.gold:hover{background:var(--gold-deep);color:#fff}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--muted)}
+.btn.ghost:hover{background:var(--pine-soft);color:var(--pine)}
+.btn.danger{border-color:var(--clay);color:var(--clay);background:var(--surface)}
+.btn.danger:hover{background:var(--clay-soft)}
+.btn.sm{padding:6px 11px;font-size:12.5px}
+.input,textarea.input,select.input{width:100%;background:var(--surface);border:1.5px solid var(--border2);border-radius:9px;padding:10px 13px;font-size:14px;font-family:'Albert Sans',sans-serif;color:var(--ink);outline:none;transition:border-color .15s}
+.input:focus{border-color:var(--pine)}
+textarea.input{resize:vertical;line-height:1.6}
+.label{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:0 0 6px}
+.hint{font-size:12.5px;color:var(--faint);margin-top:5px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;border:1px solid var(--border);color:var(--muted);background:var(--surface2)}
+.tag.pine{background:var(--pine-soft);border-color:transparent;color:var(--pine)}
+.tag.gold{background:var(--gold-soft);border-color:transparent;color:var(--gold-deep)}
+.tag.sky{background:var(--sky-soft);border-color:transparent;color:var(--sky)}
+.tag.moss{background:var(--moss-soft);border-color:transparent;color:var(--moss)}
+.tag.clay{background:var(--clay-soft);border-color:transparent;color:var(--clay)}
+.spinner{display:inline-block;width:15px;height:15px;border:2.5px solid var(--border2);border-top-color:var(--pine);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-2px}
 @keyframes spin{to{transform:rotate(360deg)}}
-.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
-.tab{padding:8px 16px;font-size:13px;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s}
-.tab.active{color:var(--accent2);border-bottom-color:var(--accent)}
-.email-preview{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:16px;font-size:13px;line-height:1.8;color:var(--text2);white-space:pre-wrap;min-height:120px}
-.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
-.progress-label{width:140px;color:var(--text2);flex-shrink:0;font-size:12px}
-.progress-bar{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;border-radius:3px;background:var(--accent)}
-.progress-val{width:36px;text-align:right;color:var(--text2);font-family:'DM Mono',monospace;font-size:12px}
-.status-line{font-size:12.5px;color:var(--text3);margin-top:10px;min-height:20px}
-.wake-banner{background:rgba(240,164,41,0.1);border:1px solid rgba(240,164,41,0.3);border-radius:8px;padding:10px 14px;font-size:12.5px;color:var(--amber);margin-bottom:16px;display:none}
-.run-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px}
-.run-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.run-title{font-size:15px;font-weight:500}
-.run-options{display:flex;gap:20px;margin-bottom:16px;flex-wrap:wrap}
-.run-option{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text2);cursor:pointer}
-.run-option input{accent-color:var(--accent);width:15px;height:15px}
-.run-log{background:var(--bg3);border-radius:8px;padding:14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text2);min-height:80px;max-height:240px;overflow-y:auto;line-height:1.8;display:none}
-.log-line{display:flex;gap:10px;align-items:baseline}
-.log-line.done{color:var(--green)}
-.log-line.working{color:var(--amber)}
-.log-line.err{color:var(--red)}
-.log-line .ts{color:var(--text3);font-size:11px;flex-shrink:0}
+.empty{color:var(--faint);font-size:13.5px;text-align:center;padding:38px 16px}
+.empty i{font-size:30px;display:block;margin-bottom:8px;opacity:.4}
+
+/* ---------- toast ---------- */
+#toasts{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-size:13.5px;box-shadow:0 6px 24px rgba(0,0,0,.18);animation:rise .25s ease;max-width:90vw}
+.toast.err{background:var(--clay)}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ---------- auth ---------- */
+#view-auth{display:none;min-height:100vh}
+#view-auth.active{display:grid;grid-template-columns:1.05fr 1fr}
+.auth-brand{background:var(--pine);color:#F2EFE6;padding:56px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.auth-brand::after{content:'';position:absolute;right:-130px;bottom:-130px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(232,163,61,.32),transparent 68%)}
+.auth-logo{font-family:'Bricolage Grotesque';font-size:21px;font-weight:700;letter-spacing:-.4px}
+.auth-logo b{color:var(--gold)}
+.auth-head{font-family:'Bricolage Grotesque';font-size:clamp(30px,3.6vw,46px);font-weight:600;line-height:1.12;letter-spacing:-1px;max-width:480px}
+.auth-head em{font-style:normal;color:var(--gold)}
+.auth-points{display:flex;flex-direction:column;gap:13px;margin-top:30px;font-size:14.5px;color:#CFE0D2;max-width:420px}
+.auth-points div{display:flex;gap:11px;align-items:flex-start}
+.auth-points i{color:var(--gold);margin-top:2px}
+.auth-side{display:flex;align-items:center;justify-content:center;padding:36px 22px}
+.auth-card{width:100%;max-width:400px}
+.auth-tabs{display:flex;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:4px;margin-bottom:24px}
+.auth-tab{flex:1;text-align:center;padding:9px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer}
+.auth-tab.active{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+.field{margin-bottom:16px}
+.pin-row{display:flex;gap:10px}
+.pin-box{width:54px;height:58px;text-align:center;font-size:24px;font-family:'Spline Sans Mono',monospace;font-weight:600;background:var(--surface);border:1.5px solid var(--border2);border-radius:10px;color:var(--ink);outline:none}
+.pin-box:focus{border-color:var(--pine)}
+.auth-err{color:var(--clay);font-size:13px;margin-top:12px;min-height:18px}
+@media(max-width:860px){#view-auth.active{grid-template-columns:1fr}.auth-brand{padding:34px 26px;min-height:34vh}.auth-head{font-size:29px}.auth-points{display:none}}
+
+/* ---------- onboarding ---------- */
+#view-onboard{display:none;min-height:100vh}
+#view-onboard.active{display:block}
+.ob-wrap{max-width:680px;margin:0 auto;padding:42px 20px 80px}
+.ob-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:30px}
+.ob-steps{display:flex;gap:7px}
+.ob-dot{width:34px;height:5px;border-radius:3px;background:var(--border)}
+.ob-dot.on{background:var(--gold)}
+.ob-title{font-size:27px;font-weight:600;letter-spacing:-.6px;margin-bottom:6px}
+.ob-sub{color:var(--muted);font-size:14.5px;margin-bottom:26px}
+.drop{border:2px dashed var(--border2);border-radius:14px;padding:44px 20px;text-align:center;cursor:pointer;transition:all .15s;background:var(--surface)}
+.drop:hover,.drop.over{border-color:var(--pine);background:var(--pine-soft)}
+.drop i{font-size:34px;color:var(--pine);display:block;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;padding:8px;background:var(--surface);border:1.5px solid var(--border2);border-radius:9px;min-height:48px}
+.chips:focus-within{border-color:var(--pine)}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--pine-soft);color:var(--pine);border-radius:18px;padding:5px 11px;font-size:13px;font-weight:600}
+.chip i{cursor:pointer;font-size:13px;opacity:.75}
+.chip i:hover{opacity:1}
+.chips input{border:none;outline:none;background:transparent;flex:1;min-width:130px;font-size:14px;font-family:'Albert Sans',sans-serif;padding:5px}
+.checks{display:flex;gap:9px;flex-wrap:wrap}
+.check{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--border2);border-radius:9px;padding:8px 14px;font-size:13.5px;font-weight:500;cursor:pointer;background:var(--surface);user-select:none}
+.check input{display:none}
+.check.on{border-color:var(--pine);background:var(--pine-soft);color:var(--pine);font-weight:600}
+.cv-summary{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:12px;background:var(--moss-soft);border:1px solid #CBE7D6}
+.cv-summary i{font-size:24px;color:var(--moss)}
+
+/* ---------- app shell ---------- */
+#view-app{display:none}
+#view-app.active{display:grid;grid-template-columns:226px 1fr;grid-template-rows:58px 1fr;min-height:100vh}
+.topbar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;background:var(--surface);border-bottom:1px solid var(--border);padding:0 22px;position:sticky;top:0;z-index:50}
+.tb-logo{font-family:'Bricolage Grotesque';font-size:18px;font-weight:700;letter-spacing:-.4px}
+.tb-logo b{color:var(--gold)}
+.tb-right{display:flex;align-items:center;gap:14px}
+.usage{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.usage-bar{width:70px;height:5px;border-radius:3px;background:var(--border);overflow:hidden}
+.usage-fill{height:100%;background:var(--gold);border-radius:3px}
+.tb-user{width:34px;height:34px;border-radius:50%;background:var(--pine);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;cursor:pointer;font-family:'Bricolage Grotesque'}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);padding:16px 10px;display:flex;flex-direction:column;gap:2px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:9px 13px;border-radius:9px;cursor:pointer;color:var(--muted);font-size:13.5px;font-weight:500;transition:all .12s}
+.nav-item:hover{background:var(--surface2);color:var(--ink)}
+.nav-item.active{background:var(--pine-soft);color:var(--pine);font-weight:600}
+.nav-item i{font-size:17px}
+.nav-sec{padding:16px 13px 5px;font-size:10.5px;letter-spacing:.9px;color:var(--faint);text-transform:uppercase;font-weight:600}
+.main{overflow-y:auto;padding:26px 28px 90px}
+.page{display:none;max-width:1060px}
+.page.active{display:block}
+.pg-title{font-size:23px;font-weight:600;letter-spacing:-.5px}
+.pg-sub{color:var(--muted);font-size:14px;margin:3px 0 22px}
+@media(max-width:860px){
+  #view-app.active{grid-template-columns:1fr}
+  .sidebar{position:fixed;bottom:0;left:0;right:0;top:auto;flex-direction:row;overflow-x:auto;border-right:none;border-top:1px solid var(--border);padding:8px 10px calc(8px + env(safe-area-inset-bottom));z-index:60;gap:4px}
+  .nav-item{flex-direction:column;gap:3px;font-size:10px;padding:7px 11px;min-width:64px;text-align:center}
+  .nav-sec{display:none}
+  .main{padding:18px 16px 120px}
+  .usage{display:none}
+}
+
+/* ---------- dashboard ---------- */
+.hero{background:linear-gradient(120deg,var(--pine) 0%,var(--pine-deep) 78%);border-radius:16px;color:#F2EFE6;padding:26px;display:flex;justify-content:space-between;gap:22px;align-items:center;position:relative;overflow:hidden;margin-bottom:20px}
+.hero::after{content:'';position:absolute;right:-70px;top:-90px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(232,163,61,.36),transparent 70%)}
+.hero h2{font-size:21px;font-weight:600;letter-spacing:-.4px;margin-bottom:5px}
+.hero p{font-size:13.5px;color:#C9DCCD;max-width:480px}
+.hero .btn{position:relative;z-index:1;flex-shrink:0}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px 17px}
+.stat .lbl{font-size:11px;color:var(--faint);text-transform:uppercase;letter-spacing:.6px;font-weight:600;margin-bottom:5px}
+.stat .val{font-size:26px;font-weight:600;font-family:'Bricolage Grotesque';letter-spacing:-.8px}
+@media(max-width:860px){.stat-grid{grid-template-columns:repeat(2,1fr)}.hero{flex-direction:column;align-items:flex-start}}
+.two-col{display:grid;grid-template-columns:1fr 320px;gap:18px}
+@media(max-width:1000px){.two-col{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+.panel h3{font-size:12px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.6px;margin-bottom:13px}
+.check-row{display:flex;align-items:center;gap:10px;font-size:13.5px;padding:6px 0;color:var(--muted)}
+.check-row i{font-size:17px}
+.check-row.done{color:var(--ink)}
+.check-row.done i{color:var(--moss)}
+.check-row:not(.done) i{color:var(--border2)}
+
+/* ---------- job cards ---------- */
+.job-list{display:flex;flex-direction:column;gap:11px}
+.job-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:border-color .15s,box-shadow .15s;cursor:pointer}
+.job-card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.jc-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+.jc-title{font-size:15px;font-weight:600;letter-spacing:-.2px}
+.jc-co{font-size:13px;color:var(--muted);margin-top:2px}
+.jc-sum{font-size:13px;color:var(--muted);margin-top:8px}
+.jc-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+.jc-actions{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
+.gauge{width:46px;height:46px;flex-shrink:0}
+
+/* ---------- pipeline ---------- */
+.pipe{display:grid;grid-template-columns:repeat(5,minmax(170px,1fr));gap:11px;overflow-x:auto;padding-bottom:8px}
+.pipe-col{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px;min-height:220px}
+.pipe-head{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:11px;padding:0 3px}
+.pipe-count{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1px 8px;font-family:'Spline Sans Mono',monospace}
+.mini{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:10px 11px;margin-bottom:8px;cursor:pointer;font-size:12.5px;transition:box-shadow .15s}
+.mini[draggable=true]{cursor:grab}
+.mini.dragging{opacity:.45}
+.pipe-col.drag-over{border-color:var(--pine);background:var(--pine-soft)}
+.mini:hover{box-shadow:var(--shadow)}
+.mini b{display:block;font-size:12.5px;font-weight:600;margin-bottom:2px}
+.mini span{color:var(--faint)}
+.mini .mscore{float:right;font-family:'Spline Sans Mono',monospace;font-weight:600}
+
+/* ---------- modal ---------- */
+.modal-bg{position:fixed;inset:0;background:rgba(34,42,33,.45);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:30px 14px;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:16px;max-width:660px;width:100%;padding:24px;position:relative;animation:rise .2s ease}
+.modal-x{position:absolute;top:16px;right:16px;background:var(--surface2);border:1px solid var(--border);width:32px;height:32px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.stage-pills{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
+.stage-pill{padding:6px 13px;border-radius:18px;border:1.5px solid var(--border2);font-size:12.5px;font-weight:600;cursor:pointer;color:var(--muted);background:var(--surface)}
+.stage-pill.on{background:var(--pine);border-color:var(--pine);color:#fff}
+.doc-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12.5px;font-family:'Spline Sans Mono',monospace;white-space:pre-wrap;max-height:320px;overflow-y:auto;line-height:1.65;color:#3A4138}
+
+/* ---------- chat ---------- */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 230px);min-height:380px}
+.chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:14px}
+.msg{display:flex;gap:10px;max-width:86%}
+.msg.user{flex-direction:row-reverse;align-self:flex-end}
+.bubble{padding:11px 15px;border-radius:13px;font-size:13.5px;line-height:1.6;background:var(--surface);border:1px solid var(--border)}
+.msg.user .bubble{background:var(--pine);border-color:var(--pine);color:#fff}
+.avatar{width:31px;height:31px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;font-family:'Bricolage Grotesque'}
+.avatar.ai{background:var(--gold-soft);color:var(--gold-deep)}
+.avatar.me{background:var(--pine-soft);color:var(--pine)}
+.chat-row{display:flex;gap:10px;padding-top:13px;border-top:1px solid var(--border)}
+
+/* tabs */
+.tabs{display:flex;gap:0;border-bottom:1.5px solid var(--border);margin-bottom:18px}
+.tab{padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--muted);border-bottom:2.5px solid transparent;margin-bottom:-1.5px}
+.tab.active{color:var(--pine);border-bottom-color:var(--gold)}
 </style>
 </head>
 <body>
-<div class="app">
 
-<div class="topbar">
-  <div class="topbar-logo">apply<span>.vg</span></div>
-  <div class="topbar-right">
-    <span class="badge-pill active"><i class="ti ti-circle-filled" style="font-size:8px;margin-right:4px"></i>Live on Render</span>
-    <span class="badge-pill">vanshika.catprep@gmail.com</span>
+<div id="toasts"></div>
+
+<!-- ================= AUTH ================= -->
+<div id="view-auth">
+  <div class="auth-brand">
+    <div class="auth-logo">pursuit<b>.</b></div>
+    <div>
+      <div class="auth-head">Your job search,<br><em>mostly automated.</em></div>
+      <div class="auth-points">
+        <div><i class="ti ti-file-cv"></i><span>Upload your CV once — the AI learns who you are and what you're aiming for.</span></div>
+        <div><i class="ti ti-world-search"></i><span>It searches the live web for real openings and scores each one against you.</span></div>
+        <div><i class="ti ti-wand"></i><span>One click prepares a tailored CV and a personal outreach email per role.</span></div>
+        <div><i class="ti ti-lock"></i><span>Your account, your data. Nobody else sees it.</span></div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:#9DB8A4">Built on Claude · v1.1</div>
+  </div>
+  <div class="auth-side">
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="t-signin" onclick="authTab('signin')">Sign in</div>
+        <div class="auth-tab" id="t-signup" onclick="authTab('signup')">Create account</div>
+      </div>
+      <div id="f-signup" style="display:none">
+        <div class="field"><label class="label">Your name</label><input class="input" id="su-name" placeholder="e.g. Vanshika Gandhi" autocomplete="name"></div>
+        <div class="field"><label class="label">Email</label><input class="input" id="su-email" type="email" placeholder="you@gmail.com" autocomplete="email"><div class="hint">Used to sign in and for outreach drafts.</div></div>
+        <div class="field"><label class="label">Choose a 4-digit PIN</label><div class="pin-row" id="su-pin"></div></div>
+        <button class="btn primary" style="width:100%;padding:12px" onclick="doSignup()" id="su-btn">Create my account</button>
+      </div>
+      <div id="f-signin">
+        <div class="field"><label class="label">Email</label><input class="input" id="si-email" type="email" placeholder="you@gmail.com" autocomplete="email"></div>
+        <div class="field"><label class="label">PIN</label><div class="pin-row" id="si-pin"></div></div>
+        <button class="btn primary" style="width:100%;padding:12px" onclick="doLogin()" id="si-btn">Sign in</button>
+      </div>
+      <div class="auth-err" id="auth-err"></div>
+    </div>
   </div>
 </div>
 
-<nav class="sidebar">
-  <div class="nav-section">Overview</div>
-  <div class="nav-item active" onclick="showPage('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
-  <div class="nav-item" onclick="showPage('find',this)"><i class="ti ti-search"></i> Find Jobs</div>
-  <div class="nav-item" onclick="showPage('pipeline',this)"><i class="ti ti-columns"></i> Pipeline</div>
-  <div class="nav-divider"></div>
-  <div class="nav-section">Tools</div>
-  <div class="nav-item" onclick="showPage('tailor',this)"><i class="ti ti-file-text"></i> Tailor CV</div>
-  <div class="nav-item" onclick="showPage('outreach',this)"><i class="ti ti-mail"></i> Outreach</div>
-  <div class="nav-divider"></div>
-  <div class="nav-section">Support</div>
-  <div class="nav-item" onclick="showPage('queries',this)"><i class="ti ti-help-circle"></i> Queries</div>
-  <div class="nav-item" onclick="showPage('chat',this)"><i class="ti ti-message-circle"></i> Strategy Chat</div>
-</nav>
+<!-- ================= ONBOARDING ================= -->
+<div id="view-onboard">
+  <div class="ob-wrap">
+    <div class="ob-top">
+      <div class="auth-logo" style="color:var(--ink)">pursuit<b>.</b></div>
+      <div class="ob-steps"><div class="ob-dot on" id="dot1"></div><div class="ob-dot" id="dot2"></div><div class="ob-dot" id="dot3"></div></div>
+    </div>
 
-<main class="main">
-
-<!-- DASHBOARD -->
-<div class="page active" id="page-dashboard">
-  <div class="section-title">Good morning, Vanshika</div>
-  <div class="section-sub">Your job search pipeline at a glance.</div>
-  <div id="wake-banner" class="wake-banner"><i class="ti ti-clock" style="margin-right:6px"></i>Backend is waking up (free tier). First request may take ~30s.</div>
-
-  <div class="run-box">
-    <div class="run-header">
-      <div>
-        <div class="run-title">Run pipeline</div>
-        <div style="font-size:12px;color:var(--text2);margin-top:2px">Find jobs → score → tailor CV → optionally send HR emails. All in one go.</div>
+    <div id="ob-step1">
+      <div class="ob-title">First, your CV.</div>
+      <div class="ob-sub">This is the one document the platform works from. PDF works best.</div>
+      <div class="drop" id="drop" onclick="document.getElementById('cv-file').click()">
+        <i class="ti ti-cloud-upload"></i>
+        <div style="font-weight:600;font-size:15px">Drop your CV here, or click to choose</div>
+        <div class="hint">PDF up to ~5 MB</div>
       </div>
-      <button class="btn primary" id="run-btn" onclick="runPipeline()" style="padding:10px 20px;font-size:14px"><i class="ti ti-player-play"></i> Run</button>
+      <input type="file" id="cv-file" accept="application/pdf" style="display:none" onchange="cvFilePicked(this.files[0])">
+      <div style="text-align:center;margin:16px 0;color:var(--faint);font-size:13px">— or —</div>
+      <textarea class="input" id="cv-text" rows="6" placeholder="Paste your full CV text here instead..."></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px">
+        <button class="btn primary" id="cv-go" onclick="cvTextSubmit()">Use pasted text <i class="ti ti-arrow-right"></i></button>
+      </div>
+      <div class="hint" id="cv-status" style="min-height:20px;margin-top:8px"></div>
     </div>
-    <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap">
-      <input class="input" id="run-query" placeholder="Search query — e.g. brand marketing fresher Delhi NCR" style="flex:1;min-width:200px" value="brand marketing fresher Delhi NCR consumer brand">
-      <input class="input" id="run-minscore" placeholder="Min fit score (e.g. 65)" style="width:160px" value="65">
+
+    <div id="ob-step2" style="display:none">
+      <div class="ob-title">What are you aiming for?</div>
+      <div class="ob-sub">Pre-filled from your CV where possible — edit freely. This steers every search, score, and tailored CV.</div>
+      <div id="cv-confirm" style="margin-bottom:20px"></div>
+      <div id="prefs-form"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:22px">
+        <button class="btn ghost" onclick="obStep(1)"><i class="ti ti-arrow-left"></i> Back</button>
+        <button class="btn primary" id="prefs-go" onclick="savePrefsOnboard()">Continue <i class="ti ti-arrow-right"></i></button>
+      </div>
     </div>
-    <div class="run-options">
-      <label class="run-option"><input type="checkbox" id="opt-tailor" checked> Tailor CV per job</label>
-      <label class="run-option"><input type="checkbox" id="opt-email"> Send cold emails to HR</label>
+
+    <div id="ob-step3" style="display:none">
+      <div class="ob-title">A few questions from your AI.</div>
+      <div class="ob-sub">It read your CV and wants to fill some gaps. Answer what you can — skip the rest.</div>
+      <div id="intake-list" style="display:flex;flex-direction:column;gap:14px"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:22px">
+        <button class="btn ghost" onclick="finishOnboard(true)">Skip for now</button>
+        <button class="btn gold" id="intake-go" onclick="finishOnboard(false)">Finish setup <i class="ti ti-sparkles"></i></button>
+      </div>
     </div>
-    <div class="run-log" id="run-log"></div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="view-app">
+  <div class="topbar">
+    <div class="tb-logo">pursuit<b>.</b></div>
+    <div class="tb-right">
+      <div class="usage"><span id="usage-txt"></span><div class="usage-bar"><div class="usage-fill" id="usage-fill" style="width:0%"></div></div></div>
+      <div class="tb-user" id="tb-user" onclick="go('account')">·</div>
+    </div>
   </div>
 
-  <div class="stat-grid">
-    <div class="stat-card"><div class="stat-label">Jobs found</div><div class="stat-val accent" id="stat-found">0</div></div>
-    <div class="stat-card"><div class="stat-label">Applied</div><div class="stat-val green" id="stat-applied">0</div></div>
-    <div class="stat-card"><div class="stat-label">In progress</div><div class="stat-val amber" id="stat-review">0</div></div>
-    <div class="stat-card"><div class="stat-label">Avg fit score</div><div class="stat-val blue" id="stat-avg">—</div></div>
-  </div>
-  <div class="two-col">
-    <div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div style="font-size:12px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">Recent jobs</div>
-        <button class="btn primary" onclick="showPage('find',document.querySelectorAll('.nav-item')[1])"><i class="ti ti-search"></i> Find jobs</button>
+  <nav class="sidebar" id="sidebar">
+    <div class="nav-sec">Workspace</div>
+    <div class="nav-item active" data-pg="today" onclick="go('today')"><i class="ti ti-sunrise"></i><span>Today</span></div>
+    <div class="nav-item" data-pg="discover" onclick="go('discover')"><i class="ti ti-world-search"></i><span>Discover</span></div>
+    <div class="nav-item" data-pg="pipeline" onclick="go('pipeline')"><i class="ti ti-columns-3"></i><span>Pipeline</span></div>
+    <div class="nav-sec">Studio</div>
+    <div class="nav-item" data-pg="tailor" onclick="go('tailor')"><i class="ti ti-file-pencil"></i><span>Tailor CV</span></div>
+    <div class="nav-item" data-pg="outreach" onclick="go('outreach')"><i class="ti ti-mail-bolt"></i><span>Outreach</span></div>
+    <div class="nav-item" data-pg="advisor" onclick="go('advisor')"><i class="ti ti-message-2-star"></i><span>Advisor</span></div>
+    <div class="nav-sec">You</div>
+    <div class="nav-item" data-pg="account" onclick="go('account')"><i class="ti ti-user-circle"></i><span>Account</span></div>
+  </nav>
+
+  <main class="main">
+
+    <div class="page active" id="pg-today">
+      <div class="hero">
+        <div>
+          <h2 id="hero-greet">Good morning</h2>
+          <p id="hero-sub">Run a discovery sweep — the AI searches the live web for openings that match you, scores them, and queues the good ones.</p>
+        </div>
+        <button class="btn gold" id="hero-run" onclick="runDiscovery()"><i class="ti ti-radar-2"></i> Run discovery</button>
       </div>
-      <div class="job-grid" id="recent-jobs">
-        <div style="color:var(--text3);font-size:13px;padding:30px 0;text-align:center">
-          <i class="ti ti-search" style="font-size:28px;display:block;margin-bottom:8px;opacity:0.3"></i>
-          No jobs yet. Hit "Find jobs" to start.
+      <div class="stat-grid">
+        <div class="stat"><div class="lbl">In pipeline</div><div class="val" id="st-pipe">0</div></div>
+        <div class="stat"><div class="lbl">Applied</div><div class="val" id="st-applied" style="color:var(--moss)">0</div></div>
+        <div class="stat"><div class="lbl">Interviews</div><div class="val" id="st-int" style="color:var(--gold-deep)">0</div></div>
+        <div class="stat"><div class="lbl">Avg fit</div><div class="val mono" id="st-avg" style="color:var(--pine)">—</div></div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="panel" style="padding:0;overflow:hidden">
+            <h3 style="padding:16px 18px 0">Fresh matches</h3>
+            <div id="today-jobs" style="padding:0 12px 12px"></div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="panel">
+            <h3>Setup strength</h3>
+            <div id="strength"></div>
+          </div>
+          <div class="panel">
+            <h3>Next best actions</h3>
+            <div id="nudges" style="font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:9px"></div>
+          </div>
         </div>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <div class="panel">
-        <div class="panel-title">Profile strength</div>
-        <div class="progress-row"><div class="progress-label">CV completeness</div><div class="progress-bar"><div class="progress-fill" style="width:95%"></div></div><div class="progress-val">95%</div></div>
-        <div class="progress-row"><div class="progress-label">Target clarity</div><div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div><div class="progress-val">90%</div></div>
-        <div class="progress-row"><div class="progress-label">Queries answered</div><div class="progress-bar"><div class="progress-fill" id="query-progress" style="width:0%"></div></div><div class="progress-val" id="query-pct">0%</div></div>
+
+    <div class="page" id="pg-discover">
+      <div class="pg-title">Discover</div>
+      <div class="pg-sub">Real openings from the live web, scored against your profile. No invented listings — every result links to its source.</div>
+      <div class="tabs">
+        <div class="tab active" onclick="discTab(this,'d-search')">AI search</div>
+        <div class="tab" onclick="discTab(this,'d-paste')">Add a specific job</div>
       </div>
-      <div class="panel">
-        <div class="panel-title">Target roles</div>
-        <div style="display:flex;flex-wrap:wrap;gap:6px">
-          <span class="tag accent">Brand Marketing</span>
-          <span class="tag accent">Growth Marketing</span>
-          <span class="tag blue">Consumer Insights</span>
-          <span class="tag blue">Brand Strategy</span>
-          <span class="tag green">Influencer Marketing</span>
-          <span class="tag green">Brand Partnerships</span>
+      <div id="d-search">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <input class="input" id="disc-q" style="flex:1;min-width:230px" placeholder="e.g. brand marketing fresher Gurgaon D2C">
+          <button class="btn primary" id="disc-btn" onclick="doSearch()"><i class="ti ti-world-search"></i> Search the web</button>
         </div>
-        <div style="margin-top:10px;font-size:11px;color:var(--text3)">Delhi NCR · Gurgaon · Bangalore · Mumbai</div>
+        <div class="hint" id="disc-status" style="min-height:20px"></div>
+        <div class="job-list" id="disc-results" style="margin-top:14px"></div>
+      </div>
+      <div id="d-paste" style="display:none">
+        <div class="field"><label class="label">Job posting URL</label>
+          <div style="display:flex;gap:10px"><input class="input" id="an-url" placeholder="https://..."><button class="btn primary" onclick="doAnalyze('url')">Fetch</button></div>
+          <div class="hint">LinkedIn often blocks robots — if fetching fails, paste the JD below.</div>
+        </div>
+        <div class="field"><label class="label">Or paste the job description</label>
+          <textarea class="input" id="an-jd" rows="7" placeholder="Paste the full JD text..."></textarea>
+          <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn primary" onclick="doAnalyze('jd')">Analyze & score</button></div>
+        </div>
+        <div class="hint" id="an-status" style="min-height:20px"></div>
+        <div class="job-list" id="an-result" style="margin-top:8px"></div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- FIND JOBS -->
-<div class="page" id="page-find">
-  <div class="section-title">Find Jobs</div>
-  <div class="section-sub">Describe what you're looking for. AI searches, scores, and queues matches.</div>
-  <div class="tab-bar">
-    <div class="tab active" onclick="switchTab(this,'tab-search')">AI Search</div>
-    <div class="tab" onclick="switchTab(this,'tab-url')">Paste URL</div>
-  </div>
-  <div id="tab-search">
-    <div style="display:flex;gap:10px;margin-bottom:8px">
-      <input class="input" id="search-query" placeholder="e.g. brand marketing fresher Gurgaon D2C" value="brand marketing fresher Delhi NCR consumer brand">
-      <button class="btn primary" onclick="searchJobs()"><i class="ti ti-search"></i> Search</button>
+    <div class="page" id="pg-pipeline">
+      <div class="pg-title">Pipeline</div>
+      <div class="pg-sub">Every application, discovery to offer. Click a card to manage it.</div>
+      <div class="pipe" id="pipe"></div>
     </div>
-    <div class="status-line" id="search-status"></div>
-    <div class="job-grid" id="search-results" style="margin-top:16px"></div>
-  </div>
-  <div id="tab-url" style="display:none">
-    <div style="display:flex;gap:10px;margin-bottom:8px">
-      <input class="input" id="url-input" placeholder="https://www.linkedin.com/jobs/view/...">
-      <button class="btn primary" onclick="analyzeUrl()"><i class="ti ti-link"></i> Analyze</button>
-    </div>
-    <div class="status-line" id="url-status"></div>
-    <div id="url-result" style="margin-top:16px"></div>
-  </div>
-</div>
 
-<!-- PIPELINE -->
-<div class="page" id="page-pipeline">
-  <div class="section-title">Pipeline</div>
-  <div class="section-sub">Every application from discovery to offer.</div>
-  <div class="pipeline-stages">
-    <div class="stage-col"><div class="stage-header">Discovered <span class="stage-count" id="cnt-disc">0</span></div><div id="col-discovered"></div></div>
-    <div class="stage-col"><div class="stage-header">Tailoring <span class="stage-count" id="cnt-tail">0</span></div><div id="col-tailoring"></div></div>
-    <div class="stage-col"><div class="stage-header">Applied <span class="stage-count" id="cnt-appl">0</span></div><div id="col-applied"></div></div>
-    <div class="stage-col"><div class="stage-header">Outreach <span class="stage-count" id="cnt-out">0</span></div><div id="col-outreach"></div></div>
-    <div class="stage-col"><div class="stage-header">Interview <span class="stage-count" id="cnt-int">0</span></div><div id="col-interview"></div></div>
-  </div>
-</div>
-
-<!-- TAILOR CV -->
-<div class="page" id="page-tailor">
-  <div class="section-title">Tailor CV</div>
-  <div class="section-sub" id="tailor-sub">Tailoring for your profile. Optionally paste a JD for a tighter match.</div>
-  <div class="two-col">
-    <div>
-      <div id="tailor-job-context" style="display:none;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px">
-        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Tailoring for</div>
-        <div id="tailor-job-label" style="font-weight:500"></div>
+    <div class="page" id="pg-tailor">
+      <div class="pg-title">Tailor CV</div>
+      <div class="pg-sub">A version of your CV rewritten for a specific role — same facts, sharper angle.</div>
+      <div id="tailor-ctx" style="display:none;margin-bottom:14px"></div>
+      <div class="field"><label class="label">Job description (optional — tighter match)</label>
+        <textarea class="input" id="tl-jd" rows="7" placeholder="Paste a JD, or leave blank for a strong general version aimed at your target roles..."></textarea>
       </div>
-      <div style="margin-bottom:8px;font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px">JD (optional — paste for tighter match)</div>
-      <textarea class="input" id="jd-input" style="width:100%;height:160px;resize:vertical" placeholder="Optional: paste job description for a tighter match..."></textarea>
-      <div class="btn-row">
-        <button class="btn primary" onclick="tailorCV()"><i class="ti ti-wand"></i> Tailor CV</button>
-        <button class="btn" onclick="clearTailor()"><i class="ti ti-refresh"></i> Clear</button>
+      <div style="display:flex;gap:9px">
+        <button class="btn primary" id="tl-btn" onclick="doTailorPage()"><i class="ti ti-wand"></i> Tailor my CV</button>
+        <button class="btn ghost" onclick="clearTailorPage()">Clear</button>
       </div>
-      <div class="status-line" id="tailor-status"></div>
-    </div>
-    <div>
-      <div class="panel">
-        <div class="panel-title">Tailored output</div>
-        <div class="cv-preview" id="cv-output">Click Tailor CV to generate...</div>
-        <div class="btn-row" id="cv-actions" style="display:none">
-          <button class="btn" onclick="copyCV()"><i class="ti ti-copy"></i> Copy</button>
-          <button class="btn success" onclick="downloadCV()"><i class="ti ti-download"></i> Download</button>
+      <div class="hint" id="tl-status" style="min-height:20px"></div>
+      <div class="panel" id="tl-out-panel" style="display:none;margin-top:14px">
+        <h3>Tailored CV</h3>
+        <div class="doc-box" id="tl-out" style="max-height:460px"></div>
+        <div style="display:flex;gap:9px;margin-top:13px;flex-wrap:wrap">
+          <button class="btn sm" onclick="copyText(document.getElementById('tl-out').textContent)"><i class="ti ti-copy"></i> Copy</button>
+          <button class="btn sm" onclick="printCV(document.getElementById('tl-out').textContent)"><i class="ti ti-printer"></i> Print / Save PDF</button>
+          <button class="btn sm" onclick="downloadTxt(document.getElementById('tl-out').textContent)"><i class="ti ti-download"></i> Download .txt</button>
         </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- OUTREACH -->
-<div class="page" id="page-outreach">
-  <div class="section-title">Outreach</div>
-  <div class="section-sub">Draft personalized cold emails. AI finds HR contact automatically.</div>
-  <div class="two-col">
-    <div style="display:flex;flex-direction:column;gap:8px">
-      <div style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px">Details</div>
-      <input class="input" id="outreach-company" placeholder="Company name" style="width:100%">
-      <input class="input" id="outreach-role" placeholder="Role title" style="width:100%">
-      <input class="input" id="outreach-hr" placeholder="HR name (leave blank — AI will find it)" style="width:100%">
-      <input class="input" id="outreach-email-to" placeholder="HR email (leave blank — AI will find it)" style="width:100%">
-      <div class="btn-row" style="margin-top:4px">
-        <button class="btn primary" onclick="draftOutreach()"><i class="ti ti-mail"></i> Draft email</button>
-      </div>
-      <div class="status-line" id="outreach-status"></div>
-    </div>
-    <div>
-      <div class="panel">
-        <div class="panel-title">Email draft</div>
-        <div class="email-preview" id="email-draft" contenteditable="false">Fill in company and role, then click Draft email...</div>
-        <div class="btn-row" id="email-actions" style="display:none">
-          <button class="btn" onclick="copyEmail()"><i class="ti ti-copy"></i> Copy</button>
-          <button class="btn" onclick="editEmail()" id="edit-btn"><i class="ti ti-edit"></i> Edit</button>
-          <button class="btn success" id="send-btn" onclick="sendEmail()"><i class="ti ti-send"></i> Send</button>
+    <div class="page" id="pg-outreach">
+      <div class="pg-title">Outreach</div>
+      <div class="pg-sub">A personal cold email per role. We never guess recipient addresses — paste one you've verified, or send via the posting itself.</div>
+      <div class="two-col">
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="field" style="margin:0"><label class="label">Company</label><input class="input" id="or-co"></div>
+          <div class="field" style="margin:0"><label class="label">Role</label><input class="input" id="or-role"></div>
+          <div class="field" style="margin:0"><label class="label">Contact name (optional)</label><input class="input" id="or-hr" placeholder="e.g. the recruiter's name from the posting"></div>
+          <div class="field" style="margin:0"><label class="label">Contact email (optional — only if you have it)</label><input class="input" id="or-to" placeholder="recruiter@company.com"></div>
+          <button class="btn primary" id="or-btn" onclick="doOutreachPage()"><i class="ti ti-mail-bolt"></i> Draft email</button>
+          <div class="hint" id="or-status" style="min-height:18px"></div>
         </div>
-        <div class="status-line" id="send-status"></div>
+        <div>
+          <div class="panel">
+            <h3>Draft</h3>
+            <div class="doc-box" id="or-out" style="font-family:'Albert Sans';font-size:13.5px">Fill in company and role, then draft.</div>
+            <div style="display:flex;gap:9px;margin-top:13px;flex-wrap:wrap" id="or-actions" hidden>
+              <button class="btn sm" onclick="copyText(document.getElementById('or-out').textContent)"><i class="ti ti-copy"></i> Copy</button>
+              <button class="btn sm gold" onclick="openGmailFromPage()"><i class="ti ti-brand-gmail"></i> Open in Gmail</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- QUERIES -->
-<div class="page" id="page-queries">
-  <div class="section-title">Queries</div>
-  <div class="section-sub">Answer these to sharpen CV tailoring, fit scoring, and outreach quality.</div>
-  <div class="query-list" id="query-list"></div>
-  <div class="btn-row" style="margin-top:16px">
-    <button class="btn primary" onclick="saveQueries()"><i class="ti ti-check"></i> Save answers</button>
-  </div>
-</div>
-
-<!-- CHAT -->
-<div class="page" id="page-chat">
-  <div class="section-title">Strategy Chat</div>
-  <div class="section-sub">Think through your search, prep for interviews, or ask anything.</div>
-  <div class="chat-wrap">
-    <div class="chat-messages" id="chat-messages">
-      <div class="msg">
-        <div class="msg-avatar avatar-ai">AI</div>
-        <div class="msg-bubble">Hey Vanshika — CV loaded, profile set. IIM Bodh Gaya fresher, targeting brand/growth marketing across Delhi NCR, Gurgaon, Bangalore, Mumbai. What do you want to think through?</div>
+    <div class="page" id="pg-advisor">
+      <div class="pg-title">Advisor</div>
+      <div class="pg-sub">A strategist that knows your full profile. Interview prep, targeting, negotiation — ask anything.</div>
+      <div class="chat-wrap">
+        <div class="chat-msgs" id="chat-msgs"></div>
+        <div class="chat-row">
+          <textarea class="input" id="chat-in" rows="1" placeholder="Ask about strategy, companies, interview prep..." style="resize:none" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
+          <button class="btn primary" onclick="sendChat()"><i class="ti ti-send"></i></button>
+          <button class="btn ghost" onclick="clearChat()" title="Clear conversation"><i class="ti ti-eraser"></i></button>
+        </div>
       </div>
     </div>
-    <div class="chat-input-row">
-      <textarea class="chat-input" id="chat-input" placeholder="Ask about strategy, companies to target, interview prep..." rows="1" onkeydown="chatKeydown(event)"></textarea>
-      <button class="btn primary" onclick="sendChat()"><i class="ti ti-send"></i></button>
+
+    <div class="page" id="pg-account">
+      <div class="pg-title">Account</div>
+      <div class="pg-sub" id="acct-sub"></div>
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:680px">
+        <div class="panel">
+          <h3>Your CV</h3>
+          <div id="acct-cv"></div>
+          <div style="margin-top:12px;display:flex;gap:9px;flex-wrap:wrap">
+            <button class="btn sm" onclick="document.getElementById('cv-refile').click()"><i class="ti ti-refresh"></i> Replace CV (PDF)</button>
+            <input type="file" id="cv-refile" accept="application/pdf" style="display:none" onchange="cvReplace(this.files[0])">
+          </div>
+          <div class="hint" id="acct-cv-status"></div>
+        </div>
+        <div class="panel">
+          <h3>Job preferences</h3>
+          <div id="acct-prefs"></div>
+          <div style="margin-top:14px"><button class="btn primary sm" onclick="savePrefsAccount()">Save preferences</button></div>
+        </div>
+        <div class="panel">
+          <h3>AI intake answers</h3>
+          <div id="acct-intake" style="display:flex;flex-direction:column;gap:12px"></div>
+          <div style="margin-top:14px;display:flex;gap:9px">
+            <button class="btn primary sm" onclick="saveIntakeAccount()">Save answers</button>
+            <button class="btn sm" onclick="moreIntake()"><i class="ti ti-sparkles"></i> Ask me more</button>
+          </div>
+        </div>
+        <div class="panel">
+          <h3>Usage & session</h3>
+          <div style="font-size:13.5px;color:var(--muted)" id="acct-usage"></div>
+          <div style="margin-top:14px"><button class="btn danger sm" onclick="logout()"><i class="ti ti-logout"></i> Sign out</button></div>
+        </div>
+      </div>
     </div>
-  </div>
+
+  </main>
 </div>
 
-</main>
+<!-- job modal -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
 </div>
 
 <script>
-const BACKEND = 'https://vanshika-jobs.onrender.com';
+'use strict';
+// ============ state & api ============
+const state = { token: localStorage.getItem('pursuit_token') || '', me: null, jobs: [], chat: [], ob: { cv: null, questions: [] } };
 
-const VANSHIKA_CV = `VANSHIKA GANDHI
-Gurgaon, Haryana | +91 8766938952 | vanshikagandhi.marketing@gmail.com | linkedin.com/in/vanshikagandhi11
-
-PROFILE
-Final-year IPM student at IIM Bodh Gaya (BBA completing 2026). Experience across consumer research, digital marketing, and growth strategy. Skilled at translating behavioural insights into marketing initiatives. Interested in consumer-facing brand building through storytelling and scalable growth execution.
-
-EDUCATION
-IIM Bodh Gaya — Integrated Programme in Management (BBA+MBA) | 2023–2028 | CGPA: 8.35 (Top 5 Percentile)
-Modern Delhi Public School — Class XII: 90% | Class X: 97.8%
-
-CERTIFICATION
-Lean Six Sigma Green Belt — KPMG India (2025)
-
-EXPERIENCE
-Goa Institute of Management | Research Intern | May 2026–Present
-- 25+ qualitative interviews on consumer behaviour in quick commerce
-- Identified "post-purchase pause" phenomenon; thematic analysis + interview coding
-
-Jeevika – J-WiRES | Strategy Intern | Mar–May 2025
-- Surveyed 170+ households across 5 rural blocks on cooking behaviour and fuel adoption
-- Developed Phase III scaling strategy for 18,000+ households
-- Designed SHG-led district prioritisation model across 8 districts
-
-Reliance Brands Ltd. | Digital Marketing Intern | Jun–Jul 2024
-- Optimised 7,000+ Mothercare product listings; improved digital discoverability
-- Analysed consumer behaviour through 50+ customer interactions
-- Aligned e-commerce communication with in-store positioning (omni-channel)
-
-LEADERSHIP
-Centre for Digital Innovation & Marketing, IIM BG | Student Lead | 2024–2026
-Envision Cell | Senior Representative | 2023–2026 (YES 2024 summit, 500+ attendees)
-ICSSR | Research Contributor | May–Jun 2025 (1,300+ SHG women, 3 Bihar districts)
-TEDxIIM Bodh Gaya | Creative & Marketing Team | 2023, 2025
-StraCon | Core Member — co-authored 30+ case casebook | 2024–2026
-
-ACHIEVEMENTS
-- Ranked 4/137 nationally — Brand Ascend 2.0 (2026)
-- Top 10/1,319 — SRCC Business Conclave (2024)
-- AIR 146 — IPMAT Indore (2023)
-- 99.699 percentile — JEE Paper 2 B.Arch (2023)
-
-SKILLS
-Consumer Research · Qualitative Research · Brand Strategy · Market Analysis · Omni-channel · MS Excel · PowerPoint · Canva · Figma · SPSS · Thematic Coding · Presentation Design · Public Speaking · Field Research`;
-
-const SYSTEM_PROMPT = `You are a job search AI assistant for Vanshika Gandhi.
-
-${VANSHIKA_CV}
-
-Preferences:
-- Target roles: Brand Marketing, Growth Marketing, Consumer Insights, Brand Strategy, Influencer Marketing, Brand Partnerships
-- Locations: Gurgaon, Delhi NCR, Bangalore, Mumbai
-- Company types: Consumer brands, D2C, Agencies, Consumer tech, Media & content
-- Fresher — BBA completing 2026 from IIM Bodh Gaya
-- Notice period: Immediate
-- Salary expectation: 6-10 LPA
-
-Rules:
-- Never fabricate experience, numbers, or facts not in the CV
-- Only rephrase or reframe real facts
-- Be specific and concise
-- Fit scoring: 0-100 based on role match, location, company type, fresher-friendliness`;
-
-let jobs = JSON.parse(localStorage.getItem('vg_jobs') || '[]');
-let queryAnswers = JSON.parse(localStorage.getItem('vg_queries') || '{}');
-let chatHistory = [];
-
-const QUERIES = [
-  {id:'q1', q:'Preferred company size — early-stage startup, mid-size, or large corporate?', category:'Preference'},
-  {id:'q2', q:'Open to internship-to-PPO / contract roles, or only direct full-time?', category:'Role type'},
-  {id:'q3', q:'Dream companies — any specific brands you\'d love to work at?', category:'Targeting'},
-  {id:'q4', q:'Comfortable with field/on-ground marketing, or strictly digital/strategic?', category:'Role type'},
-  {id:'q5', q:'Your LinkedIn headline right now? (Used in outreach emails)', category:'Outreach'},
-  {id:'q6', q:'Do you have a portfolio, case study deck, or work samples to link?', category:'Materials'},
-  {id:'q7', q:'Sectors to avoid entirely — pharma, BFSI, B2B, anything else?', category:'Blacklist'},
-  {id:'q8', q:'Currently in Gurgaon/Delhi? Can you relocate to Bangalore/Mumbai immediately?', category:'Logistics'},
-];
-
-function saveJobs() { localStorage.setItem('vg_jobs', JSON.stringify(jobs)); }
-
-async function callBackend(messages, systemOverride) {
-  const res = await fetch(`${BACKEND}/claude`, {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({
-      system: systemOverride || SYSTEM_PROMPT,
-      messages
-    })
+async function api(path, opts = {}) {
+  const res = await fetch('/api/' + path, {
+    method: opts.method || 'GET',
+    headers: { 'Content-Type': 'application/json', ...(state.token ? { Authorization: 'Bearer ' + state.token } : {}) },
+    body: opts.body ? JSON.stringify(opts.body) : undefined
   });
-  if (!res.ok) throw new Error(`Backend error: ${res.status}`);
-  const data = await res.json();
-  return data.text || '';
+  let data = {};
+  try { data = await res.json(); } catch (e) {}
+  if (res.status === 401 && state.token) { logout(); throw new Error('Signed out — sign in again.'); }
+  if (!res.ok) throw new Error(data.error || ('Error ' + res.status));
+  return data;
 }
 
-function wakeBackend() {
-  fetch(`${BACKEND}/health`).catch(()=>{});
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function toast(msg, err) {
+  const t = document.createElement('div');
+  t.className = 'toast' + (err ? ' err' : '');
+  t.textContent = msg;
+  document.getElementById('toasts').appendChild(t);
+  setTimeout(() => t.remove(), 3400);
+}
+function copyText(t) { navigator.clipboard.writeText(t).then(() => toast('Copied')); }
+
+// ============ views ============
+function show(view) {
+  ['auth', 'onboard', 'app'].forEach(v => document.getElementById('view-' + v).classList.toggle('active', v === view));
 }
 
-function showPage(id, el) {
+async function boot() {
+  buildPinRow('su-pin'); buildPinRow('si-pin');
+  setupDrop();
+  if (!state.token) { show('auth'); return; }
+  try {
+    state.me = await api('me');
+    if (!state.me.onboarded) { startOnboard(); }
+    else { enterApp(); }
+  } catch (e) { show('auth'); }
+}
+
+function logout() {
+  localStorage.removeItem('pursuit_token');
+  state.token = ''; state.me = null; state.jobs = []; state.chat = []; chatLoaded = false;
+  show('auth');
+}
+
+// ============ auth ============
+function authTab(which) {
+  document.getElementById('t-signin').classList.toggle('active', which === 'signin');
+  document.getElementById('t-signup').classList.toggle('active', which === 'signup');
+  document.getElementById('f-signin').style.display = which === 'signin' ? 'block' : 'none';
+  document.getElementById('f-signup').style.display = which === 'signup' ? 'block' : 'none';
+  document.getElementById('auth-err').textContent = '';
+}
+function buildPinRow(id) {
+  const row = document.getElementById(id);
+  row.innerHTML = '';
+  for (let i = 0; i < 4; i++) {
+    const b = document.createElement('input');
+    b.className = 'pin-box'; b.maxLength = 1; b.inputMode = 'numeric'; b.type = 'password'; b.autocomplete = 'off';
+    b.addEventListener('input', () => {
+      b.value = b.value.replace(/\D/g, '');
+      if (b.value && b.nextElementSibling) b.nextElementSibling.focus();
+    });
+    b.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !b.value && b.previousElementSibling) b.previousElementSibling.focus();
+      if (e.key === 'Enter') { id === 'si-pin' ? doLogin() : doSignup(); }
+    });
+    row.appendChild(b);
+  }
+}
+function readPin(id) { return [...document.getElementById(id).children].map(b => b.value).join(''); }
+
+async function doSignup() {
+  const btn = document.getElementById('su-btn'); const err = document.getElementById('auth-err');
+  err.textContent = ''; btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Creating...';
+  try {
+    const r = await api('auth/signup', { method: 'POST', body: { name: document.getElementById('su-name').value, email: document.getElementById('su-email').value, pin: readPin('su-pin') } });
+    state.token = r.token; localStorage.setItem('pursuit_token', r.token); state.me = r.user;
+    startOnboard();
+  } catch (e) { err.textContent = e.message; }
+  btn.disabled = false; btn.textContent = 'Create my account';
+}
+async function doLogin() {
+  const btn = document.getElementById('si-btn'); const err = document.getElementById('auth-err');
+  err.textContent = ''; btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Signing in...';
+  try {
+    const r = await api('auth/login', { method: 'POST', body: { email: document.getElementById('si-email').value, pin: readPin('si-pin') } });
+    state.token = r.token; localStorage.setItem('pursuit_token', r.token); state.me = r.user;
+    state.me.onboarded ? enterApp() : startOnboard();
+  } catch (e) { err.textContent = e.message; }
+  btn.disabled = false; btn.textContent = 'Sign in';
+}
+
+// ============ onboarding ============
+function startOnboard() { show('onboard'); obStep(state.me && state.me.cv_json ? 2 : 1); if (state.me && state.me.cv_json) prepStep2(JSON.parse(state.me.cv_json)); }
+function obStep(n) {
+  [1, 2, 3].forEach(i => {
+    document.getElementById('ob-step' + i).style.display = i === n ? 'block' : 'none';
+    document.getElementById('dot' + i).classList.toggle('on', i <= n);
+  });
+  window.scrollTo(0, 0);
+}
+function setupDrop() {
+  const d = document.getElementById('drop');
+  ['dragover', 'dragleave', 'drop'].forEach(ev => d.addEventListener(ev, e => {
+    e.preventDefault();
+    d.classList.toggle('over', ev === 'dragover');
+    if (ev === 'drop' && e.dataTransfer.files[0]) cvFilePicked(e.dataTransfer.files[0]);
+  }));
+}
+function fileToB64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(',')[1]);
+    r.onerror = () => rej(new Error('Could not read file'));
+    r.readAsDataURL(file);
+  });
+}
+async function cvFilePicked(file) {
+  if (!file) return;
+  if (file.type !== 'application/pdf') { toast('PDF only — or paste text below', true); return; }
+  if (file.size > 6 * 1024 * 1024) { toast('That PDF is too large (max ~5 MB)', true); return; }
+  await runExtract({ pdf_base64: await fileToB64(file) });
+}
+async function cvTextSubmit() { await runExtract({ text: document.getElementById('cv-text').value }); }
+async function runExtract(body) {
+  const st = document.getElementById('cv-status');
+  st.innerHTML = '<span class="spinner"></span> Reading your CV — usually 20–40 seconds...';
+  try {
+    const r = await api('cv', { method: 'POST', body });
+    state.ob.cv = r.cv;
+    state.me.cv_json = JSON.stringify(r.cv);
+    st.textContent = '';
+    prepStep2(r.cv);
+    obStep(2);
+  } catch (e) { st.textContent = e.message; toast(e.message, true); }
+}
+
+function prepStep2(cv) {
+  const exp = (cv.experience || []).length, sk = (cv.skills || []).length;
+  document.getElementById('cv-confirm').innerHTML = `
+    <div class="cv-summary"><i class="ti ti-circle-check"></i>
+      <div><b>${esc(cv.name || state.me.name)}</b> — ${esc(cv.headline || 'profile read')}<br>
+      <span style="font-size:12.5px;color:var(--muted)">${exp} experience entries · ${sk} skills · ${(cv.education || []).length} education entries extracted</span></div>
+    </div>`;
+  renderPrefsForm('prefs-form', prefsFromCV(cv));
+}
+function prefsFromCV(cv) {
+  const s = (cv && cv.suggested) || {};
+  const existing = state.me.prefs || {};
+  return {
+    roles: existing.roles || s.roles || [],
+    industries: existing.industries || s.industries || [],
+    locations: existing.locations || s.locations || [],
+    salary: existing.salary || '', workMode: existing.workMode || [], jobTypes: existing.jobTypes || ['Full-time'],
+    availability: existing.availability || '', avoid: existing.avoid || '', links: existing.links || '', extra: existing.extra || ''
+  };
+}
+
+// ---- prefs form (shared by onboarding + account) ----
+const chipStore = {};
+function renderPrefsForm(containerId, p) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = `
+    <div class="field"><label class="label">Target roles</label><div class="chips" data-chip="${containerId}-roles"></div><div class="hint">Type and press Enter to add.</div></div>
+    <div class="field"><label class="label">Industries</label><div class="chips" data-chip="${containerId}-industries"></div></div>
+    <div class="field"><label class="label">Locations</label><div class="chips" data-chip="${containerId}-locations"></div></div>
+    <div class="field"><label class="label">Work mode</label><div class="checks" data-checks="${containerId}-workMode"></div></div>
+    <div class="field"><label class="label">Role type</label><div class="checks" data-checks="${containerId}-jobTypes"></div></div>
+    <div class="field"><label class="label">Salary expectation</label><input class="input" id="${containerId}-salary" placeholder="e.g. ₹6–10 LPA"></div>
+    <div class="field"><label class="label">Availability / notice</label><input class="input" id="${containerId}-availability" placeholder="e.g. Immediate, or from June 2026"></div>
+    <div class="field"><label class="label">Avoid (companies, sectors, dealbreakers)</label><input class="input" id="${containerId}-avoid" placeholder="e.g. no BFSI, no night shifts"></div>
+    <div class="field"><label class="label">Portfolio / links</label><input class="input" id="${containerId}-links" placeholder="LinkedIn, portfolio, work samples..."></div>
+    <div class="field"><label class="label">Anything else the AI should know</label><textarea class="input" id="${containerId}-extra" rows="3" placeholder="Constraints, ambitions, context..."></textarea></div>`;
+  buildChips(containerId + '-roles', p.roles); buildChips(containerId + '-industries', p.industries); buildChips(containerId + '-locations', p.locations);
+  buildChecks(containerId + '-workMode', ['Remote', 'Hybrid', 'On-site'], p.workMode);
+  buildChecks(containerId + '-jobTypes', ['Full-time', 'Internship', 'Contract'], p.jobTypes);
+  document.getElementById(containerId + '-salary').value = p.salary || '';
+  document.getElementById(containerId + '-availability').value = p.availability || '';
+  document.getElementById(containerId + '-avoid').value = p.avoid || '';
+  document.getElementById(containerId + '-links').value = p.links || '';
+  document.getElementById(containerId + '-extra').value = p.extra || '';
+}
+function buildChips(key, initial) {
+  chipStore[key] = [...(initial || [])].map(String);
+  const wrap = document.querySelector(`[data-chip="${key}"]`);
+  function render() {
+    wrap.innerHTML = '';
+    chipStore[key].forEach((v, i) => {
+      const ch = document.createElement('span'); ch.className = 'chip';
+      ch.innerHTML = `${esc(v)} <i class="ti ti-x"></i>`;
+      ch.querySelector('i').onclick = () => { chipStore[key].splice(i, 1); render(); };
+      wrap.appendChild(ch);
+    });
+    const inp = document.createElement('input'); inp.placeholder = chipStore[key].length ? '' : 'Add...';
+    inp.addEventListener('keydown', e => {
+      if ((e.key === 'Enter' || e.key === ',') && inp.value.trim()) { e.preventDefault(); chipStore[key].push(inp.value.trim()); render(); wrap.querySelector('input').focus(); }
+      if (e.key === 'Backspace' && !inp.value && chipStore[key].length) { chipStore[key].pop(); render(); wrap.querySelector('input').focus(); }
+    });
+    inp.addEventListener('blur', () => { if (inp.value.trim()) { chipStore[key].push(inp.value.trim()); render(); } });
+    wrap.appendChild(inp);
+  }
+  render();
+}
+function buildChecks(key, options, selected) {
+  const wrap = document.querySelector(`[data-checks="${key}"]`);
+  wrap.innerHTML = '';
+  const sel = new Set(selected || []);
+  options.forEach(opt => {
+    const l = document.createElement('label');
+    l.className = 'check' + (sel.has(opt) ? ' on' : '');
+    l.innerHTML = `<input type="checkbox" ${sel.has(opt) ? 'checked' : ''}><span>${esc(opt)}</span>`;
+    l.onclick = e => { e.preventDefault(); const inp = l.querySelector('input'); inp.checked = !inp.checked; l.classList.toggle('on', inp.checked); };
+    wrap.appendChild(l);
+  });
+}
+function collectPrefs(containerId) {
+  const checks = key => [...document.querySelectorAll(`[data-checks="${key}"] .check.on span`)].map(s => s.textContent);
+  return {
+    roles: chipStore[containerId + '-roles'] || [], industries: chipStore[containerId + '-industries'] || [],
+    locations: chipStore[containerId + '-locations'] || [],
+    workMode: checks(containerId + '-workMode'), jobTypes: checks(containerId + '-jobTypes'),
+    salary: document.getElementById(containerId + '-salary').value.trim(),
+    availability: document.getElementById(containerId + '-availability').value.trim(),
+    avoid: document.getElementById(containerId + '-avoid').value.trim(),
+    links: document.getElementById(containerId + '-links').value.trim(),
+    extra: document.getElementById(containerId + '-extra').value.trim()
+  };
+}
+
+async function savePrefsOnboard() {
+  const btn = document.getElementById('prefs-go');
+  const prefs = collectPrefs('prefs-form');
+  if (!prefs.roles.length) { toast('Add at least one target role', true); return; }
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+  try {
+    state.me = await api('me', { method: 'PUT', body: { prefs } });
+    obStep(3);
+    loadIntake();
+  } catch (e) { toast(e.message, true); }
+  btn.disabled = false; btn.innerHTML = 'Continue <i class="ti ti-arrow-right"></i>';
+}
+async function loadIntake() {
+  const list = document.getElementById('intake-list');
+  list.innerHTML = '<div class="hint"><span class="spinner"></span> Thinking about what to ask you...</div>';
+  try {
+    const r = await api('intake', { method: 'POST' });
+    state.ob.questions = r.questions || [];
+    list.innerHTML = '';
+    if (!state.ob.questions.length) { finishOnboard(true); return; }
+    state.ob.questions.forEach((q, i) => {
+      const d = document.createElement('div'); d.className = 'card'; d.style.padding = '16px';
+      d.innerHTML = `<div style="font-weight:600;font-size:14px;margin-bottom:9px">${esc(q)}</div><textarea class="input" rows="2" id="iq-${i}" placeholder="Your answer (optional)..."></textarea>`;
+      list.appendChild(d);
+    });
+  } catch (e) { list.innerHTML = `<div class="hint">${esc(e.message)} — you can skip this step.</div>`; }
+}
+async function finishOnboard(skip) {
+  if (!skip) {
+    const intake = state.ob.questions.map((q, i) => ({ q, a: (document.getElementById('iq-' + i) || { value: '' }).value.trim() })).filter(x => x.a);
+    if (intake.length) {
+      try { state.me = await api('me', { method: 'PUT', body: { intake: [...(state.me.intake || []), ...intake] } }); } catch (e) { toast(e.message, true); }
+    }
+  }
+  enterApp();
+  toast('You\u2019re set. Run discovery whenever you\u2019re ready.');
+}
+
+// ============ app shell ============
+async function enterApp() {
+  show('app');
+  document.getElementById('tb-user').textContent = (state.me.name || '?').trim().charAt(0).toUpperCase();
+  renderUsage();
+  await loadJobs();
+  go('today');
+}
+function renderUsage() {
+  const u = state.me.usage || { used: 0, limit: 300 };
+  document.getElementById('usage-txt').textContent = `AI today: ${u.used}/${u.limit}`;
+  document.getElementById('usage-fill').style.width = Math.min(100, (u.used / u.limit) * 100) + '%';
+}
+async function refreshMe() { try { state.me = await api('me'); renderUsage(); } catch (e) {} }
+async function loadJobs() { try { const r = await api('jobs'); state.jobs = r.jobs || []; } catch (e) { toast(e.message, true); } }
+
+function go(pg) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(el) el.classList.add('active');
+  document.getElementById('pg-' + pg).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.pg === pg));
+  if (pg === 'today') renderToday();
+  if (pg === 'discover') renderDiscover();
+  if (pg === 'pipeline') renderPipe();
+  if (pg === 'account') renderAccount();
+  if (pg === 'advisor' && !chatLoaded) loadChat();
+  document.querySelector('.main').scrollTop = 0;
 }
 
-function switchTab(el, tabId) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+// ============ today ============
+function renderToday() {
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('hero-greet').textContent = `${greet}, ${(state.me.name || '').split(' ')[0]}`;
+  const active = state.jobs.filter(j => j.stage !== 'offer');
+  document.getElementById('st-pipe').textContent = state.jobs.length;
+  document.getElementById('st-applied').textContent = state.jobs.filter(j => ['applied', 'interview', 'offer'].includes(j.stage)).length;
+  document.getElementById('st-int').textContent = state.jobs.filter(j => ['interview', 'offer'].includes(j.stage)).length;
+  const scores = state.jobs.map(j => j.score).filter(Boolean);
+  document.getElementById('st-avg').textContent = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : '—';
+
+  const fresh = state.jobs.filter(j => j.stage === 'discovered').sort((a, b) => b.score - a.score).slice(0, 5);
+  const tj = document.getElementById('today-jobs');
+  tj.innerHTML = fresh.length ? '' : '<div class="empty"><i class="ti ti-radar-2"></i>No fresh matches yet. Run discovery above.</div>';
+  fresh.forEach(j => tj.appendChild(jobCard(j, true)));
+
+  const cv = !!state.me.cv_json, pr = !!(state.me.prefs && state.me.prefs.roles && state.me.prefs.roles.length);
+  const iq = (state.me.intake || []).length;
+  document.getElementById('strength').innerHTML = `
+    <div class="check-row ${cv ? 'done' : ''}"><i class="ti ti-circle-check-filled"></i> CV uploaded & understood</div>
+    <div class="check-row ${pr ? 'done' : ''}"><i class="ti ti-circle-check-filled"></i> Preferences set</div>
+    <div class="check-row ${iq ? 'done' : ''}"><i class="ti ti-circle-check-filled"></i> ${iq ? iq + ' intake answers given' : 'Intake questions answered'}</div>`;
+
+  const nudges = [];
+  const stale = state.jobs.filter(j => j.stage === 'applied' && Date.now() - j.updated_at > 7 * 86400000);
+  if (stale.length) nudges.push(`<div style="cursor:pointer" onclick="go('pipeline')"><i class="ti ti-bell" style="color:var(--gold-deep)"></i> ${stale.length} application${stale.length > 1 ? 's' : ''} with no movement in 7+ days — open it and hit Follow-up email.</div>`);
+  const prep = state.jobs.filter(j => j.stage === 'preparing' && !j.tailored_cv);
+  if (prep.length) nudges.push(`<div><i class="ti ti-file-pencil" style="color:var(--pine)"></i> ${prep.length} role${prep.length > 1 ? 's' : ''} in Preparing without a tailored CV yet.</div>`);
+  const disc = state.jobs.filter(j => j.stage === 'discovered' && j.score >= 75);
+  if (disc.length) nudges.push(`<div><i class="ti ti-flame" style="color:var(--clay)"></i> ${disc.length} high-fit match${disc.length > 1 ? 'es' : ''} (75+) waiting in Discover.</div>`);
+  if (!nudges.length) nudges.push('<div><i class="ti ti-circle-check" style="color:var(--moss)"></i> Nothing urgent. Run discovery or talk to your Advisor.</div>');
+  document.getElementById('nudges').innerHTML = nudges.join('');
+}
+async function runDiscovery() {
+  go('discover');
+  const p = state.me.prefs || {};
+  const q = [(p.roles || []).slice(0, 3).join(' / '), (p.locations || []).slice(0, 3).join(', ')].filter(Boolean).join(' — ');
+  document.getElementById('disc-q').value = q;
+  doSearch();
+}
+
+// ============ discover ============
+function discTab(el, id) {
+  document.querySelectorAll('#pg-discover .tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('tab-search').style.display = tabId==='tab-search' ? 'block' : 'none';
-  document.getElementById('tab-url').style.display = tabId==='tab-url' ? 'block' : 'none';
+  document.getElementById('d-search').style.display = id === 'd-search' ? 'block' : 'none';
+  document.getElementById('d-paste').style.display = id === 'd-paste' ? 'block' : 'none';
 }
-
-async function searchJobs() {
-  const query = document.getElementById('search-query').value.trim();
-  if(!query) return;
-  const status = document.getElementById('search-status');
-  const results = document.getElementById('search-results');
-  status.innerHTML = '<span class="spinner"></span>Searching and scoring...';
-  results.innerHTML = '';
-  document.getElementById('wake-banner').style.display = 'flex';
-  try {
-    const text = await callBackend([{role:'user', content:`Generate 6 realistic job listings for this search: "${query}". Match Vanshika's profile — fresher from IIM Bodh Gaya targeting marketing roles. Return ONLY a JSON array, no other text. Each object: {title, company, location, type, score, reason, tags}. score is 0-100 fit score. tags is array of 2-3 strings. reason is 1 sentence.`}]);
-    document.getElementById('wake-banner').style.display = 'none';
-    let parsed;
-    try { parsed = JSON.parse(text.replace(/```json|```/g,'').trim()); } catch(e) { parsed = []; }
-    if(!Array.isArray(parsed)) parsed = [];
-    parsed.forEach(job => { job.id = Date.now()+Math.random(); job.stage='discovered'; jobs.push(job); });
-    saveJobs();
-    renderJobCards(parsed, results);
-    updateStats(); updatePipeline();
-    status.textContent = `Found ${parsed.length} relevant roles.`;
-  } catch(e) {
-    document.getElementById('wake-banner').style.display = 'none';
-    status.textContent = 'Error: ' + e.message + '. Backend may be waking up — try again in 30s.';
+function renderDiscover() {
+  const res = document.getElementById('disc-results');
+  const fresh = state.jobs.filter(j => j.stage === 'discovered').sort((a, b) => b.score - a.score);
+  res.innerHTML = fresh.length ? '' : '<div class="empty"><i class="ti ti-world-search"></i>Search the live web for openings that match you.</div>';
+  fresh.forEach(j => res.appendChild(jobCard(j)));
+  if (!document.getElementById('disc-q').value) {
+    const p = state.me.prefs || {};
+    document.getElementById('disc-q').value = [(p.roles || []).slice(0, 3).join(' / '), (p.locations || []).slice(0, 2).join(', ')].filter(Boolean).join(' — ');
   }
 }
+async function doSearch() {
+  const btn = document.getElementById('disc-btn'), st = document.getElementById('disc-status');
+  btn.disabled = true; st.innerHTML = '<span class="spinner"></span> Searching the live web — usually 30–60 seconds. Every result is a real posting.';
+  try {
+    const r = await api('jobs/search', { method: 'POST', body: { query: document.getElementById('disc-q').value.trim() } });
+    await loadJobs(); refreshMe(); renderDiscover();
+    st.textContent = `${r.added.length} new match${r.added.length === 1 ? '' : 'es'} added${r.skipped ? ` · ${r.skipped} duplicate${r.skipped > 1 ? 's' : ''} skipped` : ''}.`;
+    if (!r.added.length && !r.skipped) st.textContent = 'No real postings found for that query — try broader wording.';
+  } catch (e) { st.textContent = e.message; }
+  btn.disabled = false;
+}
+async function doAnalyze(mode) {
+  const st = document.getElementById('an-status');
+  const body = mode === 'url' ? { url: document.getElementById('an-url').value.trim() } : { jd: document.getElementById('an-jd').value.trim() };
+  if (!body.url && !body.jd) return;
+  st.innerHTML = '<span class="spinner"></span> Reading and scoring...';
+  try {
+    const r = await api('jobs/analyze', { method: 'POST', body });
+    await loadJobs(); refreshMe();
+    st.textContent = 'Added to your pipeline.';
+    const box = document.getElementById('an-result'); box.innerHTML = ''; box.appendChild(jobCard(r.job));
+  } catch (e) { st.textContent = e.message; }
+}
 
-function renderJobCards(list, container) {
-  container.innerHTML = '';
-  list.forEach(job => {
-    const sc = job.score >= 75 ? 'green' : job.score >= 55 ? 'amber' : 'red';
-    const d = document.createElement('div');
-    d.className = 'job-card';
-    d.dataset.id = job.id;
-    d.innerHTML = `
-      <div class="job-header">
-        <div><div class="job-title">${job.title}</div><div class="job-company">${job.company} · ${job.location}</div></div>
-        <div class="score-ring"><div class="score-num" style="color:var(--${sc})">${job.score}</div><div class="score-label">fit</div></div>
+// ============ job card & gauge ============
+function gauge(score) {
+  const r = 17, c = 2 * Math.PI * r, off = c * (1 - (score || 0) / 100);
+  const col = score >= 75 ? 'var(--moss)' : score >= 55 ? 'var(--gold-deep)' : 'var(--clay)';
+  return `<svg class="gauge" viewBox="0 0 44 44" aria-label="fit ${score}">
+    <circle cx="22" cy="22" r="${r}" fill="none" stroke="var(--border)" stroke-width="4"/>
+    <circle cx="22" cy="22" r="${r}" fill="none" stroke="${col}" stroke-width="4" stroke-linecap="round"
+      stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 22 22)"/>
+    <text x="22" y="26" text-anchor="middle" font-size="13" font-weight="600" fill="${col}" font-family="'Spline Sans Mono',monospace">${score || 0}</text></svg>`;
+}
+function jobCard(j, compact) {
+  const d = document.createElement('div');
+  d.className = 'job-card';
+  d.onclick = e => { if (!e.target.closest('button,a')) openJob(j.id); };
+  d.innerHTML = `
+    <div class="jc-top">
+      <div style="min-width:0">
+        <div class="jc-title">${esc(j.title)}</div>
+        <div class="jc-co">${esc(j.company)}${j.location ? ' · ' + esc(j.location) : ''}</div>
       </div>
-      <div style="font-size:12.5px;color:var(--text2);margin-top:4px">${job.reason}</div>
-      <div class="job-meta">
-        <span class="tag blue">${job.type}</span>
-        ${(job.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}
-      </div>
-      <div class="btn-row">
-        <button class="btn success" onclick="moveToTailoring('${job.id}')"><i class="ti ti-wand"></i> Tailor & Apply</button>
-        <button class="btn" onclick="quickOutreach('${job.id}')"><i class="ti ti-mail"></i> Outreach</button>
-        <button class="btn danger" onclick="dismissJob('${job.id}',this.closest('.job-card'))"><i class="ti ti-x"></i> Skip</button>
-      </div>`;
-    container.appendChild(d);
+      ${gauge(j.score)}
+    </div>
+    ${j.summary && !compact ? `<div class="jc-sum">${esc(j.summary)}</div>` : ''}
+    ${j.reason ? `<div class="jc-sum" style="color:var(--faint);font-size:12.5px"><i class="ti ti-sparkles" style="font-size:12px"></i> ${esc(j.reason)}</div>` : ''}
+    <div class="jc-meta">
+      ${j.type ? `<span class="tag sky">${esc(j.type)}</span>` : ''}
+      ${(j.tags || []).map(t => `<span class="tag">${esc(t)}</span>`).join('')}
+      ${j.url ? `<a class="tag pine" href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.source || 'posting')} <i class="ti ti-external-link"></i></a>` : ''}
+    </div>
+    <div class="jc-actions">
+      <button class="btn sm primary" onclick="event.stopPropagation();prepJob('${j.id}')"><i class="ti ti-wand"></i> Prepare application</button>
+      <button class="btn sm" onclick="event.stopPropagation();openJob('${j.id}')"><i class="ti ti-eye"></i> Details</button>
+      <button class="btn sm ghost" onclick="event.stopPropagation();skipJob('${j.id}')"><i class="ti ti-x"></i> Skip</button>
+    </div>`;
+  return d;
+}
+async function skipJob(id) {
+  try { await api('jobs/' + id, { method: 'DELETE' }); state.jobs = state.jobs.filter(j => j.id !== id); renderDiscover(); renderToday(); toast('Skipped'); }
+  catch (e) { toast(e.message, true); }
+}
+function prepJob(id) { openJob(id); modalTailor(id); }
+
+// ============ pipeline ============
+const STAGES = [
+  { key: 'discovered', label: 'Discovered' }, { key: 'preparing', label: 'Preparing' },
+  { key: 'applied', label: 'Applied' }, { key: 'interview', label: 'Interview' }, { key: 'offer', label: 'Offer' }
+];
+function renderPipe() {
+  const pipe = document.getElementById('pipe');
+  pipe.innerHTML = '';
+  STAGES.forEach(s => {
+    const items = state.jobs.filter(j => j.stage === s.key);
+    const col = document.createElement('div'); col.className = 'pipe-col';
+    col.innerHTML = `<div class="pipe-head"><span>${s.label}</span><span class="pipe-count">${items.length}</span></div>`;
+    col.addEventListener('dragover', e => { e.preventDefault(); col.classList.add('drag-over'); });
+    col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+    col.addEventListener('drop', e => {
+      e.preventDefault(); col.classList.remove('drag-over');
+      const id = e.dataTransfer.getData('text/plain');
+      if (id) setStageDrag(id, s.key);
+    });
+    items.forEach(j => {
+      const m = document.createElement('div'); m.className = 'mini';
+      m.draggable = true;
+      m.innerHTML = `<span class="mscore" style="color:${j.score >= 75 ? 'var(--moss)' : j.score >= 55 ? 'var(--gold-deep)' : 'var(--clay)'}">${j.score}</span><b>${esc(j.title)}</b><span>${esc(j.company)}</span>`;
+      m.onclick = () => openJob(j.id);
+      m.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', j.id); m.classList.add('dragging'); });
+      m.addEventListener('dragend', () => m.classList.remove('dragging'));
+      col.appendChild(m);
+    });
+    if (!items.length) col.innerHTML += '<div style="color:var(--faint);font-size:12px;text-align:center;padding:18px 0">Empty</div>';
+    pipe.appendChild(col);
   });
 }
-
-async function analyzeUrl() {
-  const url = document.getElementById('url-input').value.trim();
-  if(!url) return;
-  const status = document.getElementById('url-status');
-  status.innerHTML = '<span class="spinner"></span>Fetching and analyzing...';
+async function setStageDrag(id, stage) {
+  const j = state.jobs.find(x => x.id === id);
+  if (!j || j.stage === stage) return;
   try {
-    const text = await callBackend([{role:'user', content:`Analyze this job URL: ${url}. Extract job details and score it for Vanshika. Return JSON: {title, company, location, type, score, reason, tags, keyRequirements(array)}. Only JSON, no other text.`}]);
-    let job;
-    try { job = JSON.parse(text.replace(/```json|```/g,'').trim()); } catch(e) { job = null; }
-    if(job) {
-      job.id = Date.now()+Math.random(); job.stage = 'discovered'; jobs.push(job); saveJobs();
-      const c = document.getElementById('url-result');
-      renderJobCards([job], c);
-      updateStats(); updatePipeline();
-      status.textContent = 'Analyzed.';
-    } else { status.textContent = 'Could not parse job. Try pasting the JD in Tailor CV instead.'; }
-  } catch(e) { status.textContent = 'Error: ' + e.message; }
+    const r = await api('jobs/' + id, { method: 'PUT', body: { stage } });
+    state.jobs = state.jobs.map(x => x.id === id ? r.job : x);
+    renderPipe(); renderToday();
+  } catch (e) { toast(e.message, true); }
 }
 
-let currentTailorJob = null;
-
-async function tailorCV() {
-  const jd = document.getElementById('jd-input').value.trim();
-  const status = document.getElementById('tailor-status');
-  const output = document.getElementById('cv-output');
-  status.innerHTML = '<span class="spinner"></span>Tailoring...';
-  output.textContent = 'Working...';
-  let prompt = '';
-  if(currentTailorJob) {
-    prompt = `Tailor Vanshika's CV for this role: ${currentTailorJob.title} at ${currentTailorJob.company}. ${currentTailorJob.reason ? 'Context: ' + currentTailorJob.reason : ''}. ${jd ? 'Full JD:\n' + jd : ''} Rewrite bullet points to mirror this role. No invented facts. Return full tailored CV text.`;
-  } else if(jd) {
-    prompt = `Tailor Vanshika's CV for this job description. Rewrite bullet points to mirror JD language. No invented facts. Return full tailored CV text.\n\nJOB DESCRIPTION:\n${jd}`;
-  } else {
-    prompt = `Produce a strong general version of Vanshika's CV optimised for brand/growth marketing roles at consumer brands and D2C companies. Reorder and reframe for maximum impact. No invented facts. Return full CV text.`;
-  }
+// ============ job modal ============
+let modalJobId = null;
+function openJob(id) {
+  const j = state.jobs.find(x => x.id === id);
+  if (!j) return;
+  modalJobId = id;
+  const m = document.getElementById('modal');
+  m.innerHTML = `
+    <button class="modal-x" onclick="closeModal()"><i class="ti ti-x"></i></button>
+    <div style="display:flex;gap:16px;align-items:flex-start;padding-right:34px">
+      ${gauge(j.score)}
+      <div>
+        <div style="font-size:18px;font-weight:600;letter-spacing:-.3px">${esc(j.title)}</div>
+        <div style="color:var(--muted);font-size:13.5px">${esc(j.company)}${j.location ? ' · ' + esc(j.location) : ''}${j.type ? ' · ' + esc(j.type) : ''}</div>
+      </div>
+    </div>
+    ${j.summary ? `<p style="font-size:13.5px;color:var(--muted);margin-top:12px">${esc(j.summary)}</p>` : ''}
+    ${j.reason ? `<p style="font-size:12.5px;color:var(--faint);margin-top:6px"><i class="ti ti-sparkles"></i> ${esc(j.reason)}</p>` : ''}
+    ${j.url ? `<p style="margin-top:8px"><a href="${esc(j.url)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:600">Open the real posting <i class="ti ti-external-link"></i></a></p>` : ''}
+    <div class="stage-pills">${STAGES.map(s => `<span class="stage-pill ${j.stage === s.key ? 'on' : ''}" onclick="setStage('${j.id}','${s.key}')">${s.label}</span>`).join('')}</div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:14px">
+      <button class="btn sm primary" id="m-tailor" onclick="modalTailor('${j.id}')"><i class="ti ti-wand"></i> ${j.tailored_cv ? 'Re-tailor CV' : 'Tailor CV'}</button>
+      <button class="btn sm" onclick="modalCover('${j.id}')"><i class="ti ti-file-text"></i> ${j.cover_letter ? 'Re-write cover letter' : 'Cover letter'}</button>
+      <button class="btn sm" id="m-email" onclick="modalOutreach('${j.id}')"><i class="ti ti-mail-bolt"></i> ${j.draft_email ? 'Re-draft email' : 'Draft email'}</button>
+      <button class="btn sm" onclick="modalPrep('${j.id}')"><i class="ti ti-messages"></i> ${j.interview_prep ? 'Refresh interview prep' : 'Interview prep'}</button>
+      ${['applied', 'interview'].includes(j.stage) ? `<button class="btn sm gold" onclick="modalFollowup('${j.id}')"><i class="ti ti-bell-ringing"></i> Follow-up email</button>` : ''}
+      <button class="btn sm danger" onclick="skipJob('${j.id}');closeModal()"><i class="ti ti-trash"></i> Remove</button>
+    </div>
+    <div id="m-status" class="hint" style="min-height:18px"></div>
+    <div id="m-docs">
+      ${j.tailored_cv ? docBlock('Tailored CV', j.tailored_cv, 'cv') : ''}
+      ${j.cover_letter ? docBlock('Cover letter', j.cover_letter, 'cover') : ''}
+      ${j.draft_email ? docBlock('Outreach draft', j.draft_email, 'email') : ''}
+      ${j.interview_prep ? docBlock('Interview prep', j.interview_prep, 'prep') : ''}
+      <div id="m-fu"></div>
+    </div>
+    <div class="field" style="margin-top:14px"><label class="label">Notes</label>
+      <textarea class="input" id="m-notes" rows="3" placeholder="HR name, referral, interview dates...">${esc(j.notes || '')}</textarea>
+      <div style="margin-top:8px"><button class="btn sm" onclick="saveNotes('${j.id}')">Save notes</button></div>
+    </div>`;
+  document.getElementById('modal-bg').classList.add('open');
+}
+function docBlock(title, content, kind) {
+  const id = 'doc-' + kind;
+  let actions = `<button class="btn sm" onclick="copyText(document.getElementById('${id}').textContent)"><i class="ti ti-copy"></i> Copy</button>`;
+  if (kind === 'cv') actions += `<button class="btn sm" onclick="printCV(document.getElementById('${id}').textContent)"><i class="ti ti-printer"></i> Print / PDF</button>`;
+  if (kind === 'cover') actions += `<button class="btn sm" onclick="printDoc(document.getElementById('${id}').textContent)"><i class="ti ti-printer"></i> Print / PDF</button>`;
+  if (kind === 'email' || kind === 'fu') actions += `<button class="btn sm gold" onclick="gmailFromDoc('${id}')"><i class="ti ti-brand-gmail"></i> Open in Gmail</button>`;
+  return `<div style="margin-top:14px"><div class="label">${title}</div><div class="doc-box" id="${id}">${esc(content)}</div>
+    <div style="display:flex;gap:8px;margin-top:9px;flex-wrap:wrap">${actions}</div></div>`;
+}
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); modalJobId = null; }
+async function setStage(id, stage) {
   try {
-    const text = await callBackend([{role:'user', content: prompt}]);
-    output.textContent = text;
-    document.getElementById('cv-actions').style.display = 'flex';
-    status.textContent = 'Done.';
-    if(currentTailorJob) { currentTailorJob.tailoredCV = text; saveJobs(); }
-  } catch(e) { status.textContent = 'Error: ' + e.message; output.textContent = 'Failed.'; }
+    const r = await api('jobs/' + id, { method: 'PUT', body: { stage } });
+    state.jobs = state.jobs.map(j => j.id === id ? r.job : j);
+    openJob(id); renderPipe(); renderToday();
+  } catch (e) { toast(e.message, true); }
+}
+async function saveNotes(id) {
+  try {
+    const r = await api('jobs/' + id, { method: 'PUT', body: { notes: document.getElementById('m-notes').value } });
+    state.jobs = state.jobs.map(j => j.id === id ? r.job : j);
+    toast('Notes saved');
+  } catch (e) { toast(e.message, true); }
+}
+async function modalTailor(id) {
+  const st = document.getElementById('m-status');
+  st.innerHTML = '<span class="spinner"></span> Tailoring your CV for this role — ~30 seconds...';
+  try {
+    const r = await api('jobs/' + id + '/tailor', { method: 'POST', body: {} });
+    await loadJobs(); refreshMe(); openJob(id); renderPipe();
+    toast('Tailored CV ready');
+  } catch (e) { st.textContent = e.message; }
+}
+async function modalOutreach(id) {
+  const st = document.getElementById('m-status');
+  st.innerHTML = '<span class="spinner"></span> Drafting a personal email...';
+  try {
+    const r = await api('jobs/' + id + '/outreach', { method: 'POST', body: {} });
+    await loadJobs(); refreshMe(); openJob(id); renderPipe();
+    toast('Email draft ready');
+  } catch (e) { st.textContent = e.message; }
+}
+async function modalCover(id) {
+  const st = document.getElementById('m-status');
+  st.innerHTML = '<span class="spinner"></span> Writing your cover letter — ~20 seconds...';
+  try {
+    await api('jobs/' + id + '/cover', { method: 'POST', body: {} });
+    await loadJobs(); refreshMe(); openJob(id); renderPipe();
+    toast('Cover letter ready');
+  } catch (e) { st.textContent = e.message; }
+}
+async function modalPrep(id) {
+  const st = document.getElementById('m-status');
+  st.innerHTML = '<span class="spinner"></span> Building your interview prep sheet — ~30 seconds...';
+  try {
+    await api('jobs/' + id + '/prep', { method: 'POST', body: {} });
+    await loadJobs(); refreshMe(); openJob(id); renderPipe();
+    toast('Prep sheet ready');
+  } catch (e) { st.textContent = e.message; }
+}
+async function modalFollowup(id) {
+  const st = document.getElementById('m-status');
+  st.innerHTML = '<span class="spinner"></span> Drafting a follow-up...';
+  try {
+    const r = await api('jobs/' + id + '/followup', { method: 'POST', body: {} });
+    st.textContent = '';
+    document.getElementById('m-fu').innerHTML = docBlock('Follow-up email', r.email, 'fu');
+    refreshMe();
+  } catch (e) { st.textContent = e.message; }
+}
+function printDoc(text) {
+  const paras = String(text).split('\n').map(l => l.trim());
+  let html = '';
+  for (const line of paras) { if (line) html += '<p>' + esc(line) + '</p>'; else html += '<div style="height:8px"></div>'; }
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>Letter</title><style>
+    @page{margin:22mm 24mm}
+    body{font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;font-size:11.5pt;line-height:1.6;max-width:700px;margin:0 auto;padding:28px}
+    p{margin:4px 0}
+    @media print{body{padding:0}}
+  </style></head><body>${html}<script>window.onload=function(){window.print()}<\/script></body></html>`);
+  w.document.close();
+}
+function gmailFromDoc(docId) {
+  const text = document.getElementById(docId).textContent;
+  openGmail('', text);
+}
+function openGmail(to, draft) {
+  const lines = String(draft).split('\n');
+  const subject = (lines[0] || '').replace(/^Subject:\s*/i, '').trim();
+  const body = lines.slice(1).join('\n').replace(/^\s+/, '');
+  const url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to || '') +
+    '&su=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  window.open(url, '_blank');
 }
 
-function clearTailor() {
-  currentTailorJob = null;
-  document.getElementById('jd-input').value = '';
-  document.getElementById('cv-output').textContent = 'Click Tailor CV to generate...';
-  document.getElementById('cv-actions').style.display = 'none';
-  document.getElementById('tailor-status').textContent = '';
-  document.getElementById('tailor-job-context').style.display = 'none';
-  document.getElementById('tailor-sub').textContent = 'Tailoring for your profile. Optionally paste a JD for a tighter match.';
+// ============ tailor page ============
+async function doTailorPage() {
+  const btn = document.getElementById('tl-btn'), st = document.getElementById('tl-status');
+  btn.disabled = true; st.innerHTML = '<span class="spinner"></span> Tailoring — ~30 seconds...';
+  try {
+    const r = await api('tailor', { method: 'POST', body: { jd: document.getElementById('tl-jd').value.trim() } });
+    document.getElementById('tl-out').textContent = r.cv;
+    document.getElementById('tl-out-panel').style.display = 'block';
+    st.textContent = 'Done.'; refreshMe();
+  } catch (e) { st.textContent = e.message; }
+  btn.disabled = false;
 }
-
-function copyCV() {
-  navigator.clipboard.writeText(document.getElementById('cv-output').textContent);
-  const btn = document.querySelector('#cv-actions .btn');
-  const orig = btn.innerHTML;
-  btn.innerHTML = 'Copied!';
-  setTimeout(()=>{ btn.innerHTML = orig; }, 2000);
+function clearTailorPage() {
+  document.getElementById('tl-jd').value = '';
+  document.getElementById('tl-out-panel').style.display = 'none';
+  document.getElementById('tl-status').textContent = '';
 }
-
-function downloadCV() {
-  const text = document.getElementById('cv-output').textContent;
-  const job = currentTailorJob ? `_${currentTailorJob.company.replace(/\s+/g,'_')}` : '';
-  const blob = new Blob([text], {type:'text/plain'});
+function downloadTxt(text) {
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `Vanshika_Gandhi_CV${job}.txt`;
+  a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+  a.download = (state.me.name || 'CV').replace(/\s+/g, '_') + '_CV.txt';
   a.click();
 }
-
-async function draftOutreach() {
-  const company = document.getElementById('outreach-company').value.trim();
-  const role = document.getElementById('outreach-role').value.trim();
-  if(!company || !role) return;
-  let hr = document.getElementById('outreach-hr').value.trim();
-  let hrEmail = document.getElementById('outreach-email-to').value.trim();
-  const status = document.getElementById('outreach-status');
-  const draft = document.getElementById('email-draft');
-  status.innerHTML = '<span class="spinner"></span>Finding HR contact...';
-  draft.textContent = 'Working...';
-
-  try {
-    // Step 1: find HR if not provided
-    if(!hr || !hrEmail) {
-      const hrRes = await callBackend([{role:'user', content:`Find the HR manager or talent acquisition contact at ${company} in India who handles marketing/brand roles. Return JSON only: {name, email, title}. If you can't find a real email, make a best guess at the format (e.g. firstname@company.com) based on common patterns. No other text.`}]);
-      try {
-        const hrData = JSON.parse(hrRes.replace(/```json|```/g,'').trim());
-        if(!hr && hrData.name) { hr = hrData.name; document.getElementById('outreach-hr').value = hr; }
-        if(!hrEmail && hrData.email) { hrEmail = hrData.email; document.getElementById('outreach-email-to').value = hrEmail; }
-      } catch(e) {}
+function printCV(text) {
+  const lines = String(text).split('\n');
+  let html = '', inList = false, first = true;
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { if (inList) { html += '</ul>'; inList = false; } continue; }
+    if (/^[-•]/.test(line)) {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += '<li>' + esc(line.replace(/^[-•]\s*/, '')) + '</li>';
+    } else if (/^[A-Z][A-Z0-9 &/().,'\u2019-]{2,}$/.test(line) && line === line.toUpperCase()) {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += first ? '<h1>' + esc(line) + '</h1>' : '<h2>' + esc(line) + '</h2>';
+      first = false;
+    } else {
+      if (inList) { html += '</ul>'; inList = false; }
+      html += first ? '<h1>' + esc(line) + '</h1>' : '<p>' + esc(line) + '</p>';
+      first = false;
     }
-
-    status.innerHTML = '<span class="spinner"></span>Drafting email...';
-
-    const text = await callBackend([{role:'user', content:`Write a cold outreach email from Vanshika Gandhi to ${hr || 'the hiring team'} at ${company} for the role of ${role}. 150 words max. Genuine, specific, not templated. Reference her most relevant CV experience for this role type. Sign off from vanshikagandhi.marketing@gmail.com. Format: first line is Subject: then blank line then body only.`}]);
-    draft.textContent = text;
-    document.getElementById('email-actions').style.display = 'flex';
-    status.textContent = hrEmail ? `HR: ${hrEmail}` : 'No email found — add manually before sending.';
-  } catch(e) { status.textContent = 'Error: ' + e.message; draft.textContent = 'Failed.'; }
-}
-
-function editEmail() {
-  const draft = document.getElementById('email-draft');
-  const btn = document.getElementById('edit-btn');
-  if(draft.contentEditable === 'true') {
-    draft.contentEditable = 'false';
-    draft.style.outline = 'none';
-    btn.innerHTML = '<i class="ti ti-edit"></i> Edit';
-  } else {
-    draft.contentEditable = 'true';
-    draft.style.outline = '1px solid var(--accent)';
-    draft.style.borderRadius = '4px';
-    draft.focus();
-    btn.innerHTML = '<i class="ti ti-check"></i> Done';
   }
+  if (inList) html += '</ul>';
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>CV</title><style>
+    @page{margin:16mm 18mm}
+    body{font-family:Georgia,'Times New Roman',serif;color:#1a1a1a;font-size:11.5pt;line-height:1.45;max-width:760px;margin:0 auto;padding:24px}
+    h1{font-size:19pt;letter-spacing:.3px;margin-bottom:2px}
+    h2{font-size:11pt;text-transform:uppercase;letter-spacing:1.2px;border-bottom:1.2px solid #333;padding-bottom:3px;margin:16px 0 7px}
+    p{margin:3px 0}
+    ul{margin:4px 0 4px 18px}
+    li{margin:2.5px 0}
+    @media print{body{padding:0}}
+  </style></head><body>${html}<script>window.onload=function(){window.print()}<\/script></body></html>`);
+  w.document.close();
 }
 
-function copyEmail() {
-  navigator.clipboard.writeText(document.getElementById('email-draft').textContent);
-}
-
-async function sendEmail() {
-  const to = document.getElementById('outreach-email-to').value.trim();
-  if(!to) { document.getElementById('send-status').textContent = 'Add HR email first.'; return; }
-  const body = document.getElementById('email-draft').textContent;
-  const lines = body.split('\n');
-  const subject = lines[0].replace(/^Subject:\s*/i,'').trim();
-  const emailBody = lines.slice(2).join('\n').trim();
-  const status = document.getElementById('send-status');
-  const btn = document.getElementById('send-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>';
-  // Fire and don't wait — async
-  fetch(`${BACKEND}/send-email`, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({to, subject, body: emailBody})
-  }).then(r=>r.json()).then(data=>{
-    if(data.ok) { status.textContent = 'Sent.'; status.style.color='var(--green)'; }
-    else { status.textContent = 'Failed: ' + (data.error||'unknown'); }
-    btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i> Send';
-  }).catch(e=>{ status.textContent='Error: '+e.message; btn.disabled=false; btn.innerHTML='<i class="ti ti-send"></i> Send'; });
-  status.textContent = 'Sending...';
-}
-
-async function sendChat() {
-  const input = document.getElementById('chat-input');
-  const msg = input.value.trim();
-  if(!msg) return;
-  input.value = '';
-  const container = document.getElementById('chat-messages');
-  appendMsg(container, msg, 'user');
-  chatHistory.push({role:'user', content:msg});
-  const typing = document.createElement('div');
-  typing.className = 'msg';
-  typing.innerHTML = '<div class="msg-avatar avatar-ai">AI</div><div class="msg-bubble" style="color:var(--text3)"><span class="spinner"></span>Thinking...</div>';
-  container.appendChild(typing);
-  container.scrollTop = container.scrollHeight;
+// ============ outreach page ============
+let lastOutreachDraft = '';
+async function doOutreachPage() {
+  const btn = document.getElementById('or-btn'), st = document.getElementById('or-status');
+  const company = document.getElementById('or-co').value.trim(), role = document.getElementById('or-role').value.trim();
+  if (!company || !role) { st.textContent = 'Company and role are required.'; return; }
+  btn.disabled = true; st.innerHTML = '<span class="spinner"></span> Drafting...';
   try {
-    const text = await callBackend(chatHistory, SYSTEM_PROMPT + '\n\nYou are also a strategic career advisor. Be direct, honest, and concise. No generic advice. Push back where needed.');
-    container.removeChild(typing);
-    chatHistory.push({role:'assistant', content:text});
-    appendMsg(container, text, 'ai');
-  } catch(e) {
-    typing.querySelector('.msg-bubble').textContent = 'Error: ' + e.message;
-  }
-  container.scrollTop = container.scrollHeight;
-}
-
-function appendMsg(container, text, type) {
-  const div = document.createElement('div');
-  div.className = 'msg' + (type==='user' ? ' user' : '');
-  div.innerHTML = `<div class="msg-avatar ${type==='user'?'avatar-user':'avatar-ai'}">${type==='user'?'VG':'AI'}</div><div class="msg-bubble">${text.replace(/\n/g,'<br>')}</div>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
-}
-
-function chatKeydown(e) {
-  if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
-}
-
-function renderQueries() {
-  const list = document.getElementById('query-list');
-  list.innerHTML = '';
-  QUERIES.forEach(q => {
-    const saved = queryAnswers[q.id] || '';
-    const div = document.createElement('div');
-    div.className = 'query-card';
-    div.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <span class="tag blue">${q.category}</span>
-        <span style="font-size:11px;color:${saved?'var(--green)':'var(--text3)'}">${saved?'✓ Answered':'Pending'}</span>
-      </div>
-      <div style="font-size:13.5px;font-weight:500;margin-bottom:8px">${q.q}</div>
-      <textarea class="query-answer" id="ans-${q.id}" placeholder="Your answer...">${saved}</textarea>`;
-    list.appendChild(div);
-  });
-}
-
-function saveQueries() {
-  QUERIES.forEach(q => {
-    const el = document.getElementById('ans-'+q.id);
-    if(el) queryAnswers[q.id] = el.value.trim();
-  });
-  localStorage.setItem('vg_queries', JSON.stringify(queryAnswers));
-  const answered = Object.values(queryAnswers).filter(v=>v).length;
-  const pct = Math.round((answered/QUERIES.length)*100);
-  document.getElementById('query-progress').style.width = pct+'%';
-  document.getElementById('query-pct').textContent = pct+'%';
-  renderQueries();
-}
-
-function updateStats() {
-  document.getElementById('stat-found').textContent = jobs.length;
-  document.getElementById('stat-applied').textContent = jobs.filter(j=>j.stage==='applied').length;
-  document.getElementById('stat-review').textContent = jobs.filter(j=>j.stage==='tailoring'||j.stage==='outreach').length;
-  const scores = jobs.map(j=>j.score).filter(Boolean);
-  document.getElementById('stat-avg').textContent = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : '—';
-  const recent = document.getElementById('recent-jobs');
-  const last5 = jobs.slice(-5).reverse();
-  if(last5.length) renderJobCards(last5, recent);
-}
-
-function updatePipeline() {
-  ['discovered','tailoring','applied','outreach','interview'].forEach((stage,i) => {
-    const ids = ['disc','tail','appl','out','int'];
-    const col = document.getElementById('col-'+stage);
-    const cnt = document.getElementById('cnt-'+ids[i]);
-    const stageJobs = jobs.filter(j=>j.stage===stage);
-    cnt.textContent = stageJobs.length;
-    col.innerHTML = stageJobs.map(j=>`<div class="mini-card"><div class="mini-card-title">${j.title}</div><div class="mini-card-co">${j.company}</div></div>`).join('') || '<div style="color:var(--text3);font-size:12px;text-align:center;padding:20px 0">Empty</div>';
-  });
-}
-
-function moveToTailoring(id) {
-  const job = jobs.find(j=>String(j.id)===String(id));
-  if(job) {
-    job.stage='tailoring'; saveJobs(); updateStats(); updatePipeline();
-    currentTailorJob = job;
-    document.getElementById('tailor-job-context').style.display = 'block';
-    document.getElementById('tailor-job-label').textContent = `${job.title} @ ${job.company}`;
-    document.getElementById('tailor-sub').textContent = `Tailoring for ${job.title} at ${job.company}.`;
-    document.getElementById('jd-input').value = '';
-    document.getElementById('cv-output').textContent = 'Click Tailor CV to generate...';
-    document.getElementById('cv-actions').style.display = 'none';
-    showPage('tailor', document.querySelectorAll('.nav-item')[3]);
-  }
-}
-
-function quickOutreach(id) {
-  const job = jobs.find(j=>String(j.id)===String(id));
-  if(job) {
-    document.getElementById('outreach-company').value = job.company;
-    document.getElementById('outreach-role').value = job.title;
-    showPage('outreach',document.querySelectorAll('.nav-item')[4]);
-  }
-}
-
-function dismissJob(id, card) {
-  jobs = jobs.filter(j=>String(j.id)!==String(id));
-  saveJobs();
-  card.style.opacity='0'; card.style.transition='opacity 0.2s';
-  setTimeout(()=>{ card.remove(); updateStats(); updatePipeline(); }, 200);
-}
-
-function logLine(msg, type='working') {
-  const log = document.getElementById('run-log');
-  log.style.display = 'block';
-  const ts = new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const div = document.createElement('div');
-  div.className = 'log-line ' + type;
-  div.innerHTML = `<span class="ts">${ts}</span><span>${msg}</span>`;
-  log.appendChild(div);
-  log.scrollTop = log.scrollHeight;
-}
-
-async function runPipeline() {
-  const query = document.getElementById('run-query').value.trim();
-  const minScore = parseInt(document.getElementById('run-minscore').value) || 65;
-  const doTailor = document.getElementById('opt-tailor').checked;
-  const doEmail = document.getElementById('opt-email').checked;
-
-  const btn = document.getElementById('run-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Running...';
-
-  const log = document.getElementById('run-log');
-  log.innerHTML = '';
-  log.style.display = 'block';
-
-  try {
-    // Step 1 — Find jobs
-    logLine('Searching for jobs...', 'working');
-    const searchText = await callBackend([{role:'user', content:`Generate 8 realistic job listings for: "${query}". Match Vanshika's profile — fresher from IIM Bodh Gaya targeting marketing roles. Return ONLY a JSON array. Each object: {title, company, location, type, score, reason, tags}. score 0-100. tags array of 2-3 strings. reason 1 sentence.`}]);
-    let found = [];
-    try { found = JSON.parse(searchText.replace(/```json|```/g,'').trim()); } catch(e) {}
-    if(!Array.isArray(found)) found = [];
-    logLine(`Found ${found.length} jobs.`, 'done');
-
-    // Step 2 — Filter by score
-    const filtered = found.filter(j => j.score >= minScore);
-    logLine(`${filtered.length} jobs above score ${minScore}.`, filtered.length ? 'done' : 'err');
-    if(!filtered.length) { logLine('No matches above threshold. Lower the min score and retry.', 'err'); btn.disabled=false; btn.innerHTML='<i class="ti ti-player-play"></i> Run'; return; }
-
-    // Add to jobs list
-    filtered.forEach(job => { job.id = Date.now()+Math.random(); job.stage='discovered'; jobs.push(job); });
-    saveJobs(); updateStats(); updatePipeline();
-
-    // Step 3 — Tailor CV per job
-    if(doTailor) {
-      for(const job of filtered) {
-        logLine(`Tailoring CV for ${job.title} @ ${job.company}...`, 'working');
-        try {
-          const tailored = await callBackend([{role:'user', content:`Tailor Vanshika's CV for this role: ${job.title} at ${job.company}. Context: ${job.reason}. Rewrite bullet points to mirror this role's needs. No invented facts. Return full tailored CV text.`}]);
-          job.tailoredCV = tailored;
-          job.stage = 'tailoring';
-          logLine(`CV tailored for ${job.title} @ ${job.company}.`, 'done');
-        } catch(e) { logLine(`Failed to tailor for ${job.title}: ${e.message}`, 'err'); }
-      }
-      saveJobs(); updateStats(); updatePipeline();
-    }
-
-    // Step 4 — Cold emails (optional)
-    if(doEmail) {
-      for(const job of filtered) {
-        logLine(`Drafting email for ${job.title} @ ${job.company}...`, 'working');
-        try {
-          const emailText = await callBackend([{role:'user', content:`Write a cold outreach email from Vanshika Gandhi to the hiring team at ${job.company} for the role of ${job.title}. 150 words max. Genuine, not templated. Reference her CV. From: vanshika.catprep@gmail.com. Format: first line Subject:, blank line, then body.`}]);
-          job.draftEmail = emailText;
-          job.stage = 'outreach';
-
-          // Try to send if HR email known (skip if not)
-          if(job.hrEmail) {
-            const lines = emailText.split('\n');
-            const subject = lines[0].replace(/^Subject:\s*/i,'').trim();
-            const body = lines.slice(2).join('\n').trim();
-            await fetch(`${BACKEND}/send-email`, {
-              method:'POST', headers:{'Content-Type':'application/json'},
-              body: JSON.stringify({to: job.hrEmail, subject, body})
-            });
-            logLine(`Email sent for ${job.company}.`, 'done');
-          } else {
-            logLine(`Email drafted for ${job.company} (no HR email — copy from Outreach tab).`, 'done');
-          }
-        } catch(e) { logLine(`Email failed for ${job.company}: ${e.message}`, 'err'); }
-      }
-      saveJobs(); updateStats(); updatePipeline();
-    }
-
-    logLine(`Pipeline complete. ${filtered.length} jobs processed.`, 'done');
-
-    // Show results on dashboard
-    const recent = document.getElementById('recent-jobs');
-    renderJobCards(filtered, recent);
-
-  } catch(e) {
-    logLine('Pipeline error: ' + e.message, 'err');
-  }
-
+    const r = await api('outreach', { method: 'POST', body: { company, role, hrName: document.getElementById('or-hr').value.trim() } });
+    lastOutreachDraft = r.email;
+    document.getElementById('or-out').textContent = r.email;
+    document.getElementById('or-actions').hidden = false;
+    st.textContent = ''; refreshMe();
+  } catch (e) { st.textContent = e.message; }
   btn.disabled = false;
-  btn.innerHTML = '<i class="ti ti-player-play"></i> Run';
+}
+function openGmailFromPage() { openGmail(document.getElementById('or-to').value.trim(), document.getElementById('or-out').textContent); }
+
+// ============ advisor ============
+let chatLoaded = false;
+async function loadChat() {
+  const c = document.getElementById('chat-msgs');
+  c.innerHTML = '<div class="hint" style="padding:10px"><span class="spinner"></span> Loading your conversation...</div>';
+  try {
+    const r = await api('chat');
+    state.chat = r.messages || [];
+  } catch (e) { state.chat = []; }
+  c.innerHTML = '';
+  if (!state.chat.length) seedChat();
+  else state.chat.forEach(m => addBubble(m.role === 'user' ? 'me' : 'ai', m.content));
+  chatLoaded = true;
+}
+async function clearChat() {
+  if (!confirm('Clear this conversation? Your profile and jobs are untouched.')) return;
+  try {
+    await api('chat', { method: 'DELETE' });
+    state.chat = [];
+    document.getElementById('chat-msgs').innerHTML = '';
+    seedChat();
+    toast('Conversation cleared');
+  } catch (e) { toast(e.message, true); }
+}
+function seedChat() {
+  const cv = state.me.cv_json ? JSON.parse(state.me.cv_json) : {};
+  addBubble('ai', `Hey ${(state.me.name || '').split(' ')[0]} — I've read your CV${cv.headline ? ` (${cv.headline.toLowerCase()})` : ''} and your preferences. What do you want to think through?`);
+}
+function addBubble(who, text) {
+  const c = document.getElementById('chat-msgs');
+  const d = document.createElement('div');
+  d.className = 'msg' + (who === 'me' ? ' user' : '');
+  d.innerHTML = `<div class="avatar ${who === 'me' ? 'me' : 'ai'}">${who === 'me' ? (state.me.name || 'U').charAt(0).toUpperCase() : 'AI'}</div><div class="bubble">${esc(text).replace(/\n/g, '<br>')}</div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+  return d;
+}
+async function sendChat() {
+  const inp = document.getElementById('chat-in');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  inp.value = '';
+  addBubble('me', msg);
+  const typing = addBubble('ai', '...');
+  typing.querySelector('.bubble').innerHTML = '<span class="spinner"></span>';
+  try {
+    const r = await api('chat', { method: 'POST', body: { message: msg } });
+    typing.remove();
+    addBubble('ai', r.text);
+    refreshMe();
+  } catch (e) { typing.querySelector('.bubble').textContent = e.message; }
 }
 
-// Init
-renderQueries();
-updateStats();
-updatePipeline();
-wakeBackend();
+// ============ account ============
+function renderAccount() {
+  document.getElementById('acct-sub').textContent = `${state.me.name} · ${state.me.email}`;
+  const cv = state.me.cv_json ? JSON.parse(state.me.cv_json) : null;
+  document.getElementById('acct-cv').innerHTML = cv
+    ? `<div style="font-size:14px"><b>${esc(cv.name || state.me.name)}</b> — ${esc(cv.headline || '')}<br>
+       <span style="color:var(--muted);font-size:13px">${(cv.experience || []).length} experience entries · ${(cv.skills || []).length} skills · ${(cv.education || []).length} education entries</span></div>`
+    : '<div class="hint">No CV yet.</div>';
+  renderPrefsForm('acct-prefs', state.me.prefs || prefsFromCV(cv || {}));
+  const box = document.getElementById('acct-intake');
+  const intake = state.me.intake || [];
+  box.innerHTML = intake.length ? '' : '<div class="hint">No intake answers yet — hit "Ask me more".</div>';
+  intake.forEach((x, i) => {
+    const d = document.createElement('div');
+    d.innerHTML = `<div style="font-weight:600;font-size:13.5px;margin-bottom:6px">${esc(x.q)}</div><textarea class="input" rows="2" id="acct-iq-${i}">${esc(x.a)}</textarea>`;
+    box.appendChild(d);
+  });
+  const u = state.me.usage || { used: 0, limit: 300 };
+  document.getElementById('acct-usage').innerHTML = `AI usage today: <b class="mono">${u.used}/${u.limit}</b> units (search 10 · tailor 3 · chat 1). Resets midnight UTC.<br>Signed in since ${new Date(state.me.created_at).toLocaleDateString()}.`;
+}
+async function savePrefsAccount() {
+  try { state.me = await api('me', { method: 'PUT', body: { prefs: collectPrefs('acct-prefs') } }); toast('Preferences saved'); }
+  catch (e) { toast(e.message, true); }
+}
+async function saveIntakeAccount() {
+  const intake = (state.me.intake || []).map((x, i) => ({ q: x.q, a: (document.getElementById('acct-iq-' + i) || { value: x.a }).value.trim() })).filter(x => x.a);
+  try { state.me = await api('me', { method: 'PUT', body: { intake } }); toast('Answers saved'); renderAccount(); }
+  catch (e) { toast(e.message, true); }
+}
+async function moreIntake() {
+  toast('Thinking of questions...');
+  try {
+    const r = await api('intake', { method: 'POST' });
+    const fresh = (r.questions || []).map(q => ({ q, a: '' }));
+    state.me.intake = [...(state.me.intake || []), ...fresh];
+    renderAccount(); refreshMe();
+  } catch (e) { toast(e.message, true); }
+}
+async function cvReplace(file) {
+  if (!file) return;
+  const st = document.getElementById('acct-cv-status');
+  st.innerHTML = '<span class="spinner"></span> Re-reading your CV...';
+  try {
+    const r = await api('cv', { method: 'POST', body: { pdf_base64: await fileToB64(file) } });
+    state.me.cv_json = JSON.stringify(r.cv);
+    st.textContent = 'CV updated.';
+    renderAccount(); refreshMe(); toast('CV replaced');
+  } catch (e) { st.textContent = e.message; }
+}
 
-// Restore query progress bar
-const answered = Object.values(queryAnswers).filter(v=>v).length;
-const pct = Math.round((answered/QUERIES.length)*100);
-document.getElementById('query-progress').style.width = pct+'%';
-document.getElementById('query-pct').textContent = pct+'%';
+boot();
 </script>
 </body>
 </html>
